@@ -22,14 +22,14 @@
 	  </div>
 	{{ else }}
     <div class="card-text">
-      <h4><a href="{{ $link }}" {{ $target | safeHTMLAttr }}>{{ $item.Title }}</a></h4>
+	  {{ with ($widget.GetPage (printf "slides/%s" $item.Params.slides)) }}
+      <h4><a href="{{ .RelPermalink }}" {{ $target | safeHTMLAttr }}>{{ $item.Title }}</a></h4>
+	  {{ end }}
       <div class="card-desription">
         {{ with $item.Params.summary }}<p>{{ . | markdownify }}</p>{{ end }}
-		{{ with ($widget.GetPage (printf "slides/%s" $item.Params.slides)) }}
-		<a class="btn btn-outline-primary" href="{{ .RelPermalink }}" target="_blank">
-		  {{ i18n "btn_slides" }}
+		<a class="btn btn-outline-primary" href="{{ $link }}" target="_blank">
+		  {{ i18n "open_project_site" }}
 		</a>
-		{{ end }}
       </div>
     </div>
     {{ end }}

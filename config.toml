@@ -64,10 +64,6 @@ enableGitInfo = false
 
   # Details for the Contact Widget
   email = "macermak@redhat.com"
-  address = ""
-  office_hours = """
-  """
-  phone = ""
   skype = ""
   telegram = ""
   keybase = ""  # Your keybase.io username.
