@@ -1,2 +1,8 @@
-public/
-.idea/
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Thumbs.db
+
+**/blogdown
+**/public/
