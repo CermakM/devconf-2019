@@ -1,0 +1,5 @@
+{{ $language := $.Page.Params.language }}
+
+{{ if (eq (.Get "lang") $language) }}
+  {{ .Inner }}
+{{ end }}

@@ -1,0 +1,44 @@
+.reveal section {
+  margin-left: 30px;
+  font-size: 1.5rem;
+}
+
+.reveal section div.fig-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reveal section div.fig-img {
+  margin: 15px 5%;
+}
+
+.reveal section.no-list li {
+  list-style: none;
+  margin-bottom: 0.6rem;
+}
+
+.reveal section p, ul, li, a{
+  text-align: left;
+}
+
+
+.reveal section blockquote {
+  width: 80%;
+}
+
+.reveal section img {
+  border: 0;
+  box-shadow: 0 0 0;
+}
+
+.reveal section figcaption {
+  font-size: 1rem;
+  text-align: right;
+  padding-right: 30px;
+}
+
+.reveal section figcaption p {
+  margin: 0px;
+  text-align: center;
+}
