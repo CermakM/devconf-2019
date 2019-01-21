@@ -152,6 +152,12 @@ RDF: Resource Distribution Framework
 
 ---
 
+{{% note %}}
+
+> Note that we can consider data to be open-ish since the ★★★
+
+{{% /note %}}
+
 ## 5★ Open Data
 
 {{% fragment %}}
@@ -174,6 +180,11 @@ RDF: Resource Distribution Framework
 ★★★★★    link your data to other data to provide context
 {{% /fragment %}}
 
+<br>
+
+{{% fragment %}}
+> ⚠ Note that we can consider data to be open-ish since the ★★★
+{{% /fragment %}}
 
 ---
 
@@ -248,8 +259,8 @@ you can do all what you can do with ★★ Web data and additionally:
 {{% section %}}
 #### As a publisher …
 
--  ⚠ You might need converters or plug-ins to export the data from the proprietary format.
 -  ✔ It’s still rather simple to publish.
+-  ⚠ You might need converters or plug-ins to export the data from the proprietary format.
 {{% /section %}}
 
 
@@ -271,8 +282,8 @@ you can do all what you can do with ★★★ Web data and additionally:
 - ✔ You can bookmark it.
 - ✔ You can reuse parts of the data.
 - ✔ You may be able to reuse existing tools and libraries, even if they only understand parts of the pattern the publisher used.
-- ⚠ Understanding the structure of an RDF “Graph” of data can be more effort than tabular (Excel/CSV) or tree (XML/JSON) data.
 - ✔ You can combine the data safely with other data. URIs are a global scheme so if two things have the same URI then it’s intentional, and if so that’s well on it’s way to being 5-star data!
+- ⚠ Understanding the structure of an RDF “Graph” of data can be more effort than tabular (Excel/CSV) or tree (XML/JSON) data.
 {{% /section %}}
 
 {{% section %}}
