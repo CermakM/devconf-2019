@@ -30,7 +30,6 @@ hlasování v PSP ČR nebo obohacení mapy Prahy o vyhledávání v MHD spojích
 
 {{% /lang %}}
 
-
 {{% lang lang="en" %}}
 
 ## Definition
@@ -59,7 +58,6 @@ Otevřená data musí být především
 -  Opatřená kontaktem na kurátora pro zpětnou vazbu (chyby, žádost o rozšíření, apod.)
 
 {{% /lang %}}
-
 
 {{% lang lang="en" %}}
 
@@ -93,7 +91,6 @@ The following requirements __must__ be met:
 - Datová sada v pseudo-CSV formátu (např. jiný oddělovač než ,)
 
 {{% /lang %}}
-
 
 {{% lang lang="en" %}}
 
@@ -189,11 +186,13 @@ RDF: Resource Distribution Framework
 ---
 
 {{< slide class="no-list"  >}}
+
+{{% section %}}
 {{% lang lang="en" %}}
 
 ## What are the costs & benefits of ★ Web data?
 
-{{% section %}}
+---
 
 #### As a consumer …
 
@@ -203,77 +202,82 @@ RDF: Resource Distribution Framework
 - ✔ You can enter the data into any other system.
 - ✔ You can change the data as you wish.
 - ✔ You can share the data with anyone you like.
-{{% /section %}}
 
-{{% section %}}
+---
+
 #### As a publisher …
 
 - ✔ It’s simple to publish.
 - ✔ You do not have explain repeatedly to others that they can use your data.
-{{% /section %}}
-
 
 {{% /lang %}}
+{{% /section %}}
 
 ---
 
 {{< slide class="no-list"  >}}
+
+{{% section %}}
 {{% lang lang="en" %}}
 
 ## What are the costs & benefits of ★★ Web data?
 
-{{% section %}}
+---
+
 #### As a consumer …
 
 you can do all what you can do with ★ Web data and additionally:
 
 - ✔ You can directly process it with proprietary software to aggregate it, perform calculations, visualise it, etc.
 - ✔ You can export it into another (structured) format.
-{{% /section %}}
 
-{{% section %}}
+---
+
 #### As a publisher …
 
 - ✔ It’s still simple to publish.
-{{% /section %}}
-
 
 {{% /lang %}}
+{{% /section %}}
 
 ---
 
 {{< slide class="no-list"  >}}
+
+{{% section %}}
 {{% lang lang="en" %}}
 
 ## What are the costs & benefits of ★★★ Web data?
 
+---
 
-{{% section %}}
 #### As a consumer …
 
 you can do all what you can do with ★★ Web data and additionally:
 
  - ✔ You can manipulate the data in any way you like, without the need to own any prorietary software package.
-{{% /section %}}
 
-{{% section %}}
+---
+
 #### As a publisher …
 
 -  ✔ It’s still rather simple to publish.
 -  ⚠ You might need converters or plug-ins to export the data from the proprietary format.
-{{% /section %}}
-
 
 {{% /lang %}}
+{{% /section %}}
 
 ---
 
 {{< slide class="no-list"  >}}
+
+{{% section %}}
 {{% lang lang="en" %}}
 
 ## What are the costs & benefits of ★★★★ Web data?
 
-{{% section %}}
+---
+
 #### As a consumer …
 
 you can do all what you can do with ★★★ Web data and additionally:
@@ -284,9 +288,9 @@ you can do all what you can do with ★★★ Web data and additionally:
 - ✔ You may be able to reuse existing tools and libraries, even if they only understand parts of the pattern the publisher used.
 - ✔ You can combine the data safely with other data. URIs are a global scheme so if two things have the same URI then it’s intentional, and if so that’s well on it’s way to being 5-star data!
 - ⚠ Understanding the structure of an RDF “Graph” of data can be more effort than tabular (Excel/CSV) or tree (XML/JSON) data.
-{{% /section %}}
 
-{{% section %}}
+---
+
 #### As a publisher …
 
 - ✔ You have fine-granular control over the data items and can optimise their access (load balancing, caching, etc.)
@@ -294,18 +298,21 @@ you can do all what you can do with ★★★ Web data and additionally:
 - ⚠ You typically invest some time slicing and dicing your data.
 - ⚠ You’ll need to assign URIs to data items and think about how to represent the data.
 - ⚠ You need to either find existing patterns to reuse or create your own.
-{{% /section %}}
 
 {{% /lang %}}
+{{% /section %}}
 
 ---
 
 {{< slide class="no-list"  >}}
+
+{{% section %}}
 {{% lang lang="en" %}}
 
 ## What are the costs & benefits of ★★★★★ Web data?
 
-{{% section %}}
+---
+
 #### As a consumer …
 
 you can do all what you can do with ★★★★ Web data and additionally:
@@ -314,9 +321,9 @@ you can do all what you can do with ★★★★ Web data and additionally:
 - ✔ You can directly learn about the data schema.
 - ⚠ You now have to deal with broken data links, just like 404 errors in web pages.
 - ⚠ Presenting data from an arbitrary link as fact is as risky as letting people include content from any website in your pages. Caution, trust and common sense are all still necessary.
-{{% /section %}}
 
-{{% section %}}
+---
+
 #### As a publisher …
 
 - ✔ You make your data discoverable.
@@ -324,8 +331,8 @@ you can do all what you can do with ★★★★ Web data and additionally:
 - ✔ Your own organisation will gain the same benefits from the links as the consumers.
 - ⚠ You’ll need to invest resources to link your data to other data on the Web.
 - ⚠ You may need to repair broken or incorrect links.
-{{% /section %}}
 
+{{% /section %}}
 {{% /lang %}}
 
 ---
@@ -413,9 +420,9 @@ Otevřená data jako „normál“ – fáze životního cyklu charakteristická
 </div>
 
 </div>
-{{% /section %}}
 
-{{% section %}}
+---
+
 {{% lang lang="cz" %}}
 ## Ekonomický aspekt
 
@@ -430,6 +437,10 @@ Open Data is convenient way to provide information. Creation of PDF files, web s
 In principal, making data publicly available is merely posting them in its raw form (of course, remember the 5★).
 
 {{% /lang %}}
+
+---
+
+## And many, many more ...
 
 {{% /section %}}
 
