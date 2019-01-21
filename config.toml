@@ -179,7 +179,7 @@ enableGitInfo = false
 
   # Link custom CSS and JS assets
   #   (relative to /static/css and /static/js respectively)
-  custom_css = []
+  custom_css = ['custom.css']
   custom_js  = []
 
   # Publication types.
@@ -267,7 +267,7 @@ enableGitInfo = false
     icon = "linkedin"
     icon_pack = "fab"
     link = "https://www.linkedin.com/in/ai-mcermak/"
-    
+
   [[params.social]]
     icon = "twitter"
     icon_pack = "fab"
