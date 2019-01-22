@@ -45,6 +45,16 @@
   <script src="{{ $cdn_url_reveal }}/lib/js/head.min.js"></script>
   <script src="{{ $cdn_url_reveal }}/js/reveal.min.js"></script>
 
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+  <style>
+    .reveal i.fa, i.fas {
+      font-family: 'FontAwesome';
+      font-style: normal;
+    }
+  </style>
+
   <script>
     window.revealPlugins = { dependencies: [
       { src: '{{ $cdn_url_reveal }}/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },

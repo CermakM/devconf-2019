@@ -3,10 +3,29 @@
   font-size: 1.5rem;
 }
 
+.reveal section div.fig-gallery {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.reveal section div#brno-data-gallery img {
+  width: 50%;
+}
+
 .reveal section div.fig-row {
   display: flex;
-  justify-content: center;
+  flex-flow: row;
   align-items: center;
+  justify-content: center;
+}
+
+.reveal section div.fig-col {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .reveal section div.fig-img {
@@ -15,11 +34,30 @@
 
 .reveal section.no-list li {
   list-style: none;
+  list-style-type: none;
   margin-bottom: 0.6rem;
 }
 
-.reveal section p, ul, li, a{
+.reveal section ul {
+  display: inherit;
+}
+
+.reveal section ul > li {
+  display: list-item;
   text-align: left;
+  margin-left: 7%;
+}
+
+.reveal section p, ul, li, a {
+  text-align: left
+}
+
+.reveal section.align-left p, ul, li, a{
+  text-align: left;
+}
+
+.reveal section.align-center p, ul, li, a{
+  text-align: center;
 }
 
 
@@ -41,4 +79,15 @@
 .reveal section figcaption p {
   margin: 0px;
   text-align: center;
+}
+
+.reveal section div.goto.next a:hover {
+  color: inherit;
+}
+
+@font-face {
+  font-family: "Hashtag";
+  font-weight: 600;
+  font-style: oblique;
+  src: url(../fonts/Hashtag.ttf) format("truetype");
 }

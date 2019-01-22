@@ -1,3 +1,6 @@
-img {
-  border: null
+@font-face {
+  font-family: "Hashtag";
+  font-weight: 400;
+  font-style: normal;
+  src: url(fonts/Hashtag.ttf) format('truetype');
 }
