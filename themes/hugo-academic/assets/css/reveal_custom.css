@@ -3,6 +3,11 @@
   font-size: 1.5rem;
 }
 
+.reveal pre code {
+  padding: 15px;
+  max-height: auto !important;
+}
+
 .reveal section div.fig-gallery {
   display: flex;
   flex-flow: column;

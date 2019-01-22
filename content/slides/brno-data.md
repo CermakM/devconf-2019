@@ -131,7 +131,7 @@ Data are mainly collected by the city itself, and by the city companies and othe
 
 ---
 
-### Step towards the right direction
+### Step in the right direction
 
 <div class="hashtag-brno2050" style="font-family: Hashtag; font-size: 4rem;">
   <a href="https://www.instagram.com/explore/tags/brno2050/"> #brno2050 </a>
@@ -163,6 +163,85 @@ Data are mainly collected by the city itself, and by the city companies and othe
 
 ---
 
+### Poor data distribution and/or ontology
+
+<div class="fig-img">
+{{% fragment %}}
+{{< figure src="brno-data-distribution.png" library="true" >}}
+{{% /fragment %}}
+</div>
+
+---
+
+```R
+library(tidyverse)
+
+dat <- readxl::read_xlsx("datasets/brno_data/criminality/raw/trestni_cinnost_2016.xlsx")
+colnames(dat)
+```
+
+```R
+# > [1] "Útvar městské části (okres) PČR"
+# > [2] "Základní útvar PČR, kde došlo k činu"
+# > [3] "Stadium TČ, 1-příparava, 2-pokus, 3-dokonaný"
+# > [4] "Druh TČ, 11-zločin, 18-přečin"
+# > [5] "Takticko-statistická klasifikace činu"
+# > [6] "Spácháno na ulici-1, ne-2"
+# > [7] "Čin spáchán na : viz číselník"
+# > [8] "Použití zbraně : viz číselník"
+# > [9] "Druh použité zbraně : viz číselník"
+# > [10] "Datum spáchání činu, či zahájení konání"
+# > [11] "Datum ukončení konání činu (pokud jiné datum)"
+# > [12] "Předmět zájmu pachatele č. 1"
+# > [13] "Předmět zájmu pachatele nebo vztah pachatele k oběti - text"
+# > [14] "Předmět zájmu pachatele č. 2"
+# > [15] "Předmět zájmu pachatele nebo vztah pachatele k oběti - text__1"
+# > [16] "Předmět zájmu pachatele č. 3"
+# > [17] "Předmět zájmu pachatele nebo vztah pachatele k oběti - text__2"
+# > [18] "Celková způsobená škoda v Kč"
+# > [19] "Hlavní kvalifikace činu - paragraf TZ"
+# > [20] "První odstavec"
+# > [21] "Druhý odstavec"
+# > [22] "Souběhový paragraf"
+# > [23] "Odstavec souběhu"
+# > [24] "Druhý souběhový paragraf"
+# > [25] "Odstavec souběhu__1"
+# > [26] "Datum zahájení trestního řízení"
+# > [27] "Datum ukončení trestního řízení"
+# > [28] "Způsob ukončení trestního řízení"
+# > [29] "Způsob ukončení trestního řízení - text (kde je kód \"0\" tam ještě řízení nemusí být ukončeno"
+```
+
+---
+
+### Sometimes, too _"user friendly"_
+
+<div class="fig-img">
+{{% fragment %}}
+{{< figure src="brno-data-user-friendly.png" library="true" >}}
+{{% /fragment %}}
+</div>
+
+---
+
+### Important data not available in machine readable format
+
+<div class="fig-img">
+{{% fragment %}}
+{{< figure src="brno-data-pdf.png" library="true" >}}
+{{% /fragment %}}
+</div>
+
+---
+
+### Dashboard Applications built on proprietary software ([ESRI](https://www.esri.com/en-us/home0))
+
+---
+
+### Most of the data available in Czech language only
+
+---
+
 ### Still not enough data
 
 I.e., data that is expected to be present, is not:
@@ -175,19 +254,7 @@ I.e., data that is expected to be present, is not:
 
 ---
 
-### Important data not available in machine readable format (still only in PDF)
-
----
-
-### Dashboard Applications built on proprietary software ([ESRI](https://www.esri.com/en-us/home0))
-
----
-
-### Hard to navigate from applications to datasets (if possible at all)
-
----
-
-### Most of the data available in Czech language only
+### Hard to navigate from applications to datasets
 
 {{% /section %}}
 
