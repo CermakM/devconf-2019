@@ -1,0 +1,388 @@
+---
+title: "Brno Traffic Accidents"
+subtitle: "[DATASET]"
+date: "`r format(Sys.Date())`"
+
+weight: 2
+
+summary: Visualization of traffic accidents in Brno.
+
+output:
+  md_document:
+    preserve_yaml: TRUE
+
+image:
+  # Focal point (optional)
+  # Options: Smart, Center, TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight
+  focal_point: "Smart"
+
+tags:
+  - "brno"
+  - "dataset"
+  - "open-data"
+  - "traffic"
+---
+
+Let's start by including a few libraries ...
+
+
+```{r knitr-setup, include=FALSE}
+library(tidyverse)
+library(rmarkdown)
+
+PROJECT_NAME <- metadata$title %>% tolower() %>% str_replace_all(pattern = ' ', replacement = '-')
+
+knitr::opts_knit$set(base.dir = paste0(getwd(), '/project/', PROJECT_NAME))
+knitr::opts_chunk$set(echo = T, collapse = T,
+                      fig.path = paste0("project/", PROJECT_NAME, "/figure/"),
+                      fig.width = 11, fig.height = 7,
+                      results = 'hide', message = FALSE, warning = FALSE)
+```
+
+
+```{r setup}
+library(lubridate)
+library(magrittr)
+library(tidyverse)
+library(wrapr)
+
+library(rgdal)
+library(sf)
+
+
+library(ggplot2)
+library(plotly)
+
+library(scales)
+library(viridis)
+```
+
+We are gonna borrow some functions and the basemap from our previous projects (see Brno Municipality Units)
+
+`...` (the code is left out for clarity)
+
+```{r, include=FALSE}
+EPSG <- rgdal::make_EPSG()
+
+#' Get CRS projection string.
+get_proj4string <- function(code) { EPSG[which(EPSG$code == code),]$prj4 }
+
+#' Transform coordinate system of given data frame.
+transform_crs <- function(
+  .data, lng, lat, from_crs, to_crs = '+proj=longlat +datum=WGS84 +no_defs',
+  drop = F) {
+
+  lng <- enquo(lng)
+  lat <- enquo(lat)
+
+  d <- .data %>%
+    select(!!lng, !!lat) %>%
+    set_colnames(c("lng", "lat"))
+
+  coordinates(d) <- c("lng", "lat")
+  proj4string(d) <- CRS(from_crs)
+
+  d <- spTransform(d, CRS(to_crs))
+
+  show(head(d))
+
+  if (drop) {
+    .data %<>% select(-c(!!lng, !!lat)) %>% mutate(lat = d$lat, lng = d$lng)
+  } else {
+    .data %<>%  mutate(lat = d$lat, lng = d$lng)
+  }
+
+  return(.data)
+}
+```
+
+```{r, include=FALSE}
+
+shapefile.cr.moc <- st_read("data/shape_files/moc/Městské_obvody_a_městské_části__polygony.shp")
+
+df.brno.moc <- shapefile.cr.moc %>%
+  filter(str_detect(NAZ_ZUJ, 'Brno')) %>%
+  fortify()
+
+# preprocessing
+df.brno.moc$NAZ_ZUJ <- df.brno.moc$NAZ_ZUJ %>%
+  sapply(str_to_title) %>%
+  str_replace("^.*?-", "")
+
+df.brno.obyv <- read_csv("data/brno_data/spravni_jednotky_obyvatele.csv")
+
+df.brno <- merge(df.brno.moc, df.brno.obyv, by.x = "NAZ_ZUJ", by.y = "districts")
+```
+
+
+### Brno Traffic Accidents
+
+> 💡 TIP: Check out the Brno application [here](https://data.brno.cz/en/dopravni-nehody-na-uzemi-mesta-brna/)
+
+```{r, echo=FALSE, include=FALSE}
+
+df.brno$NAZ_ZUJ %<>% factor(levels = df.brno$NAZ_ZUJ[order(df.brno$population)])
+
+### find split points
+
+split_points <- c(5.5, 9.5, 16.5, 20.5, 25.5, 26.5)
+```
+
+```{r, include=FALSE}
+
+### mark split group
+
+group_by_indices <- function(a, indicies) {
+  .indicies <- sort(unique(indicies))
+  grp <- c(1:length(a))
+
+  grp[1:.indicies[.indicies[1]]] <- 1
+
+  r <- 2
+  for (i in c(2:length(.indicies))) {
+    grp[.indicies[i-1]:.indicies[i]] <- r
+    r <- r + 1
+  }
+
+  grp[.indicies[length(.indicies)]:length(a)] <- r
+
+  return(grp)
+}
+
+
+df.brno$group[order(df.brno$population)] <- df.brno$population %>%
+  sort() %>%
+  group_by_indices(floor(split_points))
+```
+
+Get the data for the accidents
+
+> Data is available at: [DATA.BRNO](https://data.brno.cz/en/dataset/?id=dopravni-nehody)
+
+```{r}
+# data after some polishing
+df.accidents = read_csv("data/traffic/clean/accidents.csv")
+
+colnames(df.accidents) %<>% str_replace_all(" ", ".") %>% tolower()
+
+# Set Coordinate System
+# projected CRS: WGS 84 / Pseudo-Mercator, EPSG:3857
+
+# unify coordinate systems with df.brno
+df.accidents <- transform_crs(df.accidents,
+                              from_crs = get_proj4string(3857),
+                              to_crs = st_crs(df.brno)$proj4string,
+                              lng = x, lat = y, drop = F)
+
+df.accidents %<>%
+  mutate_at(vars(day.of.the.week), funs(str_sub(., end = 3L)))
+```
+
+```{r, include=FALSE}
+
+# base map
+map.base <- ggplot(data = df.brno[order(df.brno$population),]) +
+  geom_sf() +
+  coord_sf(datum = NA) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  labs(title = "Brno Base Map")
+```
+
+```{r, include=FALSE}
+
+# population map
+map.population <- map.base +
+  geom_sf(aes(fill = population)) +
+  coord_sf(datum = NA) +
+  scale_fill_gradient(
+    low = muted('blue'), high = muted('red'),
+    breaks = round(sort(df.brno$population)[floor(split_points)], -3),
+    name = "Number of citizens",
+    guide = guide_legend(keyheight = unit(3, units = 'mm'), keywidth = unit(12, units = 'mm'),
+                         label.position = 'bottom',
+                         title.position = 'top',
+                         nrow = 1)
+    ) +
+  geom_label(aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=0.4), label.size = 0.15, show.legend = F) +
+  labs(title = "Brno Population per MOC") +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+
+## Plot by collision type
+
+```{r}
+ggplot(data = df.accidents) +
+  geom_bar(aes(x = day.of.the.week, fill = `day/night`)) +
+  facet_wrap(vars(type.of.the.accident)) +
+  xlab("Day of the Week") +
+  ylab("Number of Accidents") +
+  labs(
+    title = "Brno Accidents",
+    subtitle = "by Collision Type")
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5),
+  )
+```
+
+By collision place
+
+```{r}
+ggplot(data = df.accidents) +
+  geom_bar(aes(x = day.of.the.week, fill = `day/night`)) +
+  facet_wrap(vars(`place`)) +
+  labs(title = "Brno Accidents", subtitle = "by Collision Place") +
+  xlab("Day of the Week") +
+  ylab("Number of Accidents") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5),
+    
+    axis.ticks.x = element_blank()
+  )
+```
+
+By vehicle type
+
+```{r}
+p <- ggplot(data = df.accidents) +
+  geom_bar(aes(x = day.of.the.week, fill = `day/night`)) +
+  facet_wrap(vars(`vehicle.type`)) +
+  labs(title = "Brno Accidents", subtitle = "by Vehicle Type") +
+  xlab("Day of the Week") +
+  ylab("Number of Accidents") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5),
+    
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+```
+
+```{r, echo=FALSE}
+p
+```
+
+We can also to go interactive here (but note that the identifiers are quite long)
+
+> Exercise: Process the vehicle types
+
+```{r}
+# ggplotly(p)
+```
+
+## Go back to our Brno base map and let's plot geo
+
+First classify by day of the week
+
+```{r}
+map.base +
+  geom_point(data = df.accidents, aes(x = lng, y = lat, color = factor(day.of.the.week)), alpha=0.8) +
+  geom_label(data = df.brno, aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=0.4),
+             label.size = 0.15,
+             show.legend = F) +
+  labs(color = "Day of the week")
+```
+
+Or by number of injuries
+
+```{r}
+map.accidents <- map.base +
+  geom_point(data = df.accidents, aes(x = lng, y = lat, color = light.injuries, size = light.injuries), alpha=0.8) +
+  geom_label(data = df.brno, aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=0.4),
+             label.size = 0.15,
+             show.legend = F) +
+  scale_color_gradient(low = '#ffffb2', high = '#b30000', guide = 'legend') +
+  labs(color = "Injuries", size = "Injuries") +
+  labs(title = "Brno Accidents") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+```
+
+```{r, echo=FALSE}
+map.accidents
+```
+
+## Explore map data with heatmap-ish points
+
+```{r}
+palette <- grDevices::colorRampPalette(rev(rainbow(10, end = 4/6)))
+
+map.base +
+  geom_point(data = df.accidents, aes(x = lng, y = lat,
+                                      col = grDevices::densCols(df.accidents$lng, df.accidents$lat,
+                                                                nbin=100, colramp = palette)),
+             size=1.25, show.legend = F
+  ) +
+  scale_color_identity()
+```
+
+Overlay intensity and the base map
+
+```{r}
+library(cowplot)
+
+map.heat <- ggplot(data = df.accidents, aes(x = lng, y = lat)) +
+  stat_density_2d(aes(fill = ..level.., alpha = ..level..), n = 100,
+                  geom = 'polygon', show.legend = F) +
+  scale_fill_distiller(palette = 'Spectral', direction = -1) +
+  theme_void()
+
+ggdraw(map.base) + draw_plot(map.heat)
+```
+
+## Interactive plots
+
+Leaflet
+
+> ⚠ NOTE: will be rendered as JPEG in embedded markdown notebooks) ⚠
+
+```{r}
+
+library(leaflet)
+library(leaflet.extras)
+
+brno.center = list(lng = 16.606837, lat = 49.195060)
+brno.bbox <- st_bbox(df.brno$geometry) %>%
+  setNames(c("lng1", "lat1", "lng2", "lat2")) %>%
+  as.list()
+
+leaflet(df.brno, options = leafletOptions(minZoom = 12)) %>%
+  # basemap
+  addProviderTiles(providers$OpenStreetMap.BlackAndWhite) %>%
+  # zoom to Brno
+  setView(lng = brno.center$lng, lat = brno.center$lat, zoom = 12) %>%
+  # municipality boundaries
+  addPolygons(
+    fillOpacity = 0,
+    color = '#cccccc',
+    weight = 2,
+    label = ~NAZ_ZUJ, labelOptions = labelOptions(textsize = '13px')) %>%
+  # heatmap
+  addHeatmap(lng = df.accidents$lng, lat = df.accidents$lat,
+             radius = 5, blur = 15, minOpacity = 0.05) %>%
+  # control
+  addDrawToolbar(
+    editOptions = editToolbarOptions(),
+    singleFeature = T) %>%
+  addResetMapButton() %>%
+  addScaleBar(position = 'bottomleft')
+```
+
+## Kepler.gl
+
+Awesome 3D interactive spatial data visualization tool.
+
+![](img/brno-data-accidents.png)
+
+> 💡 TIP: Check out [kepler.gl](http://kepler.gl/) and try the [demo](http://kepler.gl/#demo)
