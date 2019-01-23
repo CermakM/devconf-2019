@@ -1,0 +1,293 @@
+---
+title: "Brno Municipality Units"
+subtitle: "[DATASET]"
+date: "`r format(Sys.Date())`"
+
+weight: 1
+
+summary: Visualizaiton of Brno population per Municipality unit.
+
+output:
+  md_document:
+    preserve_yaml: TRUE
+
+image:
+  # Focal point (optional)
+  # Options: Smart, Center, TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight
+  focal_point: "Smart"
+
+tags:
+  - "brno"
+  - "dataset"
+  - "open-data"
+  - "population"
+---
+
+
+Let's start by including a few libraries ...
+
+```{r knitr-setup, include=FALSE}
+PROJECT_NAME <- "brno-municipality-units"
+
+knitr::opts_knit$set(base.dir = paste0(getwd(), '/project/', PROJECT_NAME))
+knitr::opts_chunk$set(echo = T, collapse = T,
+                      fig.path = paste0("project/", PROJECT_NAME, "/figure/"),
+                      fig.width = 11, fig.height = 7,
+                      results = 'hide', message = FALSE, warning = FALSE)
+```
+
+
+```{r setup}
+# tidyverse stuff
+library(lubridate)
+library(magrittr)
+library(tidyverse)
+library(wrapr)
+
+# spatial data
+library(rgdal)
+library(sf)
+
+# mapping
+library(ggplot2)
+library(plotly)
+
+# color scales/palettes
+library(scales)
+library(viridis)
+```
+
+Define helper functions
+
+```{r}
+EPSG <- rgdal::make_EPSG()
+
+#' Get CRS projection string.
+get_proj4string <- function(code) { EPSG[which(EPSG$code == code),]$prj4 }
+
+#' Transform coordinate system of given data frame.
+transform_crs <- function(
+  .data, lng, lat, from_crs, to_crs = '+proj=longlat +datum=WGS84 +no_defs',
+  drop = F) {
+
+  lng <- enquo(lng)
+  lat <- enquo(lat)
+
+  d <- .data %>%
+    select(!!lng, !!lat) %>%
+    set_colnames(c("lng", "lat"))
+
+  coordinates(d) <- c("lng", "lat")
+  proj4string(d) <- CRS(from_crs)
+
+  d <- spTransform(d, CRS(to_crs))
+
+  show(head(d))
+
+  if (drop) {
+    .data %<>% select(-c(!!lng, !!lat)) %>% mutate(lat = d$lat, lng = d$lng)
+  } else {
+    .data %<>%  mutate(lat = d$lat, lng = d$lng)
+  }
+
+  return(.data)
+}
+```
+
+Get the shape files for Brno base map
+
+```{r}
+
+shapefile.cr.moc <- st_read("data/shape_files/moc/Městské_obvody_a_městské_části__polygony.shp")
+
+df.brno.moc <- shapefile.cr.moc %>%
+  filter(str_detect(NAZ_ZUJ, 'Brno')) %>%
+  fortify()
+
+# preprocessing
+df.brno.moc$NAZ_ZUJ <- df.brno.moc$NAZ_ZUJ %>%
+  sapply(str_to_title) %>%
+  str_replace("^.*?-", "")
+
+df.brno.obyv <- read_csv("data/brno_data/spravni_jednotky_obyvatele.csv")
+
+df.brno <- merge(df.brno.moc, df.brno.obyv, by.x = "NAZ_ZUJ", by.y = "districts")
+```
+
+Peek at the data
+
+```{r, results=T}
+head(df.brno)
+```
+
+<br>
+
+### Brno population
+
+
+Start simple
+
+```{r}
+ggplot(data = df.brno) +
+  geom_boxplot(aes(y = population)) +
+  ylab("Population") +
+  labs(title = "Brno Population per MOC") +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.title.x = element_blank(),
+
+    plot.title = element_text(hjust = 0.5),
+
+    panel.background = element_blank()
+  )
+```
+
+```{r}
+
+ggplot(data = df.brno, aes(x = NAZ_ZUJ, y = population)) +
+  geom_col() +
+  xlab("Municipality unit") +
+  ylab("Population") +
+  labs(title = "Brno Population per MOC") +
+  theme(
+    axis.text.x = element_text(angle = 90),
+
+    plot.title = element_text(hjust = 0.5),
+
+    panel.background = element_blank()
+  )
+```
+
+```{r, echo=FALSE}
+
+df.brno$NAZ_ZUJ %<>% factor(levels = df.brno$NAZ_ZUJ[order(df.brno$population)])
+
+### find split points
+
+split_points <- c(5.5, 9.5, 16.5, 20.5, 25.5, 26.5)
+```
+
+Plot population split in the intervals
+
+```{r}
+population_graph <- ggplot(data = df.brno, aes(x = NAZ_ZUJ, y = population)) +
+  geom_col() +
+  geom_vline(xintercept = split_points, linetype='dashed', color='red') +
+  xlab("Municipality unit") +
+  ylab("Population") +
+  labs(title = "Brno Population per MOC") +
+  theme(
+    axis.text.x = element_text(angle = 90),
+
+    plot.title = element_text(hjust = 0.5),
+
+    panel.background = element_blank()
+  )
+
+population_graph  # for interactive version, use ggplotly(population_graph)
+```
+
+And color it accordingly
+
+```{r}
+population_graph +
+  geom_col(aes(fill = population)) +
+  scale_fill_gradient(
+    breaks = split_points,
+    low = muted('blue'), high = muted('red'),
+    guide = 'legend')
+```
+
+Let's plot it on the map
+
+... Start by the base map
+
+```{r}
+# base map
+map.base <- ggplot(data = df.brno[order(df.brno$population),]) +
+  geom_sf() +
+  coord_sf(datum = NA) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  labs(title = "Brno Base Map")
+```
+
+```{r, echo=FALSE}
+map.base
+```
+
+Plot the population data
+
+```{r}
+# population map
+
+map.population <- map.base +
+  geom_sf(aes(fill = population)) +
+  coord_sf(datum = NA) +
+  labs(title = "Brno Population per MOC") +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+```{r, echo=FALSE}
+map.population
+```
+
+... And add some fancy stuff, like custom coloring and legend based on the splits above
+
+```{r}
+# population map
+map.population <- map.population +
+  scale_fill_gradient(
+    low = muted('blue'), high = muted('red'),
+    breaks = round(sort(df.brno$population)[floor(split_points)], -3),
+    name = "Number of citizens",
+    guide = guide_legend(
+      keyheight = unit(3, units = 'mm'),
+      keywidth = unit(12, units = 'mm'),
+      label.position = 'bottom',
+      title.position = 'top',
+      nrow = 1)
+    )
+```
+
+```{r, echo=FALSE}
+map.population
+```
+
+And labels for the municipality units
+
+```{r}
+map.population <- map.population +
+  geom_label(
+    aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=0.4),
+    label.size = 0.15, show.legend = F
+    ) +
+  labs(title = "Brno Population per MOC")
+```
+
+```{r, echo=FALSE}
+map.population
+```
+
+Perhaps not as pretty, but a little bit clearer scale:
+
+```{r}
+map.population +
+  scale_fill_viridis(
+    trans = 'log2',
+    breaks = round(sort(df.brno$population)[floor(split_points)], -3),
+    name = "Number of citizens",
+    guide = guide_legend(
+      keyheight = unit(3, units = 'mm'),
+      keywidth = unit(12, units = 'mm'),
+      label.position = 'bottom',
+      title.position = 'top',
+      nrow = 1)
+    )
+```

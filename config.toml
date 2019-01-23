@@ -134,7 +134,7 @@ enableGitInfo = false
   comment_count = true
 
   # Display next/previous section pager?
-  section_pager = false
+  section_pager = true
 
   # Enable global LaTeX math rendering?
   #   If false, you can enable it locally on a per page basis.
@@ -302,6 +302,11 @@ enableGitInfo = false
 [[menu.main]]
   name = "Presentations"
   url = "#presentations"
+  weight = 4
+
+[[menu.main]]
+  name = "Projects"
+  url = "#projects"
   weight = 4
 
 [[menu.main]]
