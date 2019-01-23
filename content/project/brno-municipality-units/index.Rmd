@@ -27,7 +27,10 @@ tags:
 Let's start by including a few libraries ...
 
 ```{r knitr-setup, include=FALSE}
-PROJECT_NAME <- "brno-municipality-units"
+library(tidyverse)
+library(rmarkdown)
+
+PROJECT_NAME <- metadata$title %>% tolower() %>% str_replace_all(pattern = ' ', replacement = '-')
 
 knitr::opts_knit$set(base.dir = paste0(getwd(), '/project/', PROJECT_NAME))
 knitr::opts_chunk$set(echo = T, collapse = T,
@@ -291,3 +294,11 @@ map.population +
       nrow = 1)
     )
 ```
+
+## Kepler.gl
+
+Awesome 3D interactive spatial data visualization tool.
+
+![](img/brno-data-population.png)
+
+> 💡 TIP: Check out [kepler.gl](http://kepler.gl/) and try the [demo](http://kepler.gl/#demo)

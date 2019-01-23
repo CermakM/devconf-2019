@@ -280,3 +280,13 @@ Perhaps not as pretty, but a little bit clearer scale:
         )
 
 ![](project/brno-municipality-units/figure/unnamed-chunk-17-1.png)
+
+Kepler.gl
+---------
+
+Awesome 3D interactive spatial data visualization tool.
+
+![](img/brno-data-population.png)
+
+> 💡 TIP: Check out [kepler.gl](http://kepler.gl/) and try the
+> [demo](http://kepler.gl/#demo)
