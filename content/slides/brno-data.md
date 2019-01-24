@@ -165,7 +165,7 @@ Data are mainly collected by the city itself, and by the city companies and othe
 
 ---
 
-### Poor data distribution and/or ontology
+### Data distribution could be better
 
 <div class="fig-img">
 {{% fragment %}}
@@ -219,34 +219,36 @@ colnames(dat)
 ### Poor ontology / schema or inconsistency in data
 
 {{% fragment %}}
-```r
-> dat$Předmět.zájmu.pachatele.nebo.vztah.pachatele.k.oběti...text %>%
->   factor() %>%
->   levels()
 
-  [1] "airbagy"                                              "antiradary"
-  [3] "bankomaty"                                            "barevné kovy,výrobky a odpad z nich"
-  [5] "bez vztahu"                                           "bílé rase"
-  [7] "bižuterie"                                            "bratr"
-  ...
- [23] "dítě ve vzdál.poměru (synovec,neteř...)"              "dítě ve vzt. ke známé osobě (soused,známý)"
- [25] "dítě ve vztahu spolužáka,kamaráda"                    "dítě,kde jeden z rodičů je druh-družka,přítel"
- ....
- [95] "manžel"                                               "manželka"
- [97] "masné konzervy a hotová jídla v konzervách"           "matka"
- ....
-[115] "nátěrové hmoty,latexy,klihy,lepidla,barviva"          "nic"
-.....
-[145] "ostatní - zásilky a přepravované věci"                "ostatní - zbraně /mimo historických/"
-[147] "ostatní - zemědělské výrobky a výr. těžby dřeva"      "ostatní - zvířectvo včetně včelstva"
-[149] "ostatní -osobní doklady a předtisky"                  "ostatní -starožitnosti, umělecké předměty"
-[151] "ostatní -tabákové výrobky"                            "ostatní (kopie filmů,hračky,společen.hry)"
-.....
-[243] "vniknutí do obydlí za užití lsti - útoky na senior"   "výbušniny a pyrotech. výrobky"
-.....
-[261] "zlato zpracované a klenoty,šperky"                    "žlutohnědé rase / indiáni, asiati, australští dom."
-[263] "zobrazovací zařízení /terminál,monitor/"              "zvěř spárkatá /tuzemská/"
->
+```R
+dat$\`Předmět.zájmu.pachatele.nebo.vztah.pachatele.k.oběti...text\` %>%
+  factor() %>%
+  levels()
+```
+
+```R
+# >   [1] "airbagy"                                              "antiradary"
+# >   [3] "bankomaty"                                            "barevné kovy,výrobky a odpad z nich"
+# >   [5] "bez vztahu"                                           "bílé rase"
+# >   [7] "bižuterie"                                            "bratr"
+# >   ...
+# >  [23] "dítě ve vzdál.poměru (synovec,neteř...)"              "dítě ve vzt. ke známé osobě (soused,známý)"
+# >  [25] "dítě ve vztahu spolužáka,kamaráda"                    "dítě,kde jeden z rodičů je druh-družka,přítel"
+# >  ....
+# >  [95] "manžel"                                               "manželka"
+# >  [97] "masné konzervy a hotová jídla v konzervách"           "matka"
+# >  ....
+# > [115] "nátěrové hmoty,latexy,klihy,lepidla,barviva"          "nic"
+# > .....
+# > [145] "ostatní - zásilky a přepravované věci"                "ostatní - zbraně /mimo historických/"
+# > [147] "ostatní - zemědělské výrobky a výr. těžby dřeva"      "ostatní - zvířectvo včetně včelstva"
+# > [149] "ostatní -osobní doklady a předtisky"                  "ostatní -starožitnosti, umělecké předměty"
+# > [151] "ostatní -tabákové výrobky"                            "ostatní (kopie filmů,hračky,společen.hry)"
+# > .....
+# > [243] "vniknutí do obydlí za užití lsti - útoky na senior"   "výbušniny a pyrotech. výrobky"
+# > .....
+# > [261] "zlato zpracované a klenoty,šperky"                    "žlutohnědé rase / indiáni, asiati, australští dom."
+# > [263] "zobrazovací zařízení /terminál,monitor/"              "zvěř spárkatá /tuzemská/"
 ```
 {{% /fragment %}}
 
