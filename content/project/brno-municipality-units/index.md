@@ -1,7 +1,7 @@
 ---
 title: "Brno Municipality Units"
 subtitle: "[DATASET]"
-date: "2019-01-23"
+date: "2019-01-24"
 
 weight: 1
 
@@ -67,8 +67,6 @@ Define helper functions
 
       d <- spTransform(d, CRS(to_crs))
 
-      show(head(d))
-
       if (drop) {
         .data %<>% select(-c(!!lng, !!lat)) %>% mutate(lat = d$lat, lng = d$lng)
       } else {
@@ -79,6 +77,9 @@ Define helper functions
     }
 
 Get the shape files for Brno base map
+
+> Data is available at:
+> [arcdata.opendata](http://arccr-arcdata.opendata.arcgis.com/datasets/34ee5c20c3b54e6b82fd111d01905843_7)
 
 
     shapefile.cr.moc <- st_read("data/shape_files/moc/Městské_obvody_a_městské_části__polygony.shp")
@@ -92,47 +93,175 @@ Get the shape files for Brno base map
       sapply(str_to_title) %>%
       str_replace("^.*?-", "")
 
+    # this dataset has been created by hand
+    # from https://data.brno.cz/zpravy-o-stavu-mesta/zprava-o-stavu-mesta-2018/ (PDF)
     df.brno.obyv <- read_csv("data/brno_data/spravni_jednotky_obyvatele.csv")
 
     df.brno <- merge(df.brno.moc, df.brno.obyv, by.x = "NAZ_ZUJ", by.y = "districts")
 
 Peek at the data
 
-    head(df.brno)
-    ## Simple feature collection with 6 features and 20 fields
-    ## geometry type:  POLYGON
-    ## dimension:      XY
-    ## bbox:           xmin: -610939.6 ymin: -1170375 xmax: -593310.3 ymax: -1150483
-    ## epsg (SRID):    NA
-    ## proj4string:    +proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813975277778 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +units=m +no_defs
-    ##     NAZ_ZUJ OBJECTID KOD_MOaMC     NAZ_ZKR_MO      NAZ_MOaMC KOD_OBEC
-    ## 1  Bohunice       76    551082  Brno-Bohunice  Brno-Bohunice   582786
-    ## 2  Bosonohy       92    551325  Brno-Bosonohy  Brno-Bosonohy   582786
-    ## 3    Bystrc       81    551198    Brno-Bystrc    Brno-Bystrc   582786
-    ## 4 Černovice       74    551066 Brno-Černovice Brno-Černovice   582786
-    ## 5   Chrlice       91    551317   Brno-Chrlice   Brno-Chrlice   582786
-    ## 6 Ivanovice       94    551376 Brno-Ivanovice Brno-Ivanovice   582786
-    ##   NAZ_OBEC KOD_ZUJ KOD_OKRES KOD_LAU1   NAZ_LAU1 KOD_KRAJ KOD_CZNUTS
-    ## 1     Brno  551082     40711   CZ0642 Brno-město     3115      CZ064
-    ## 2     Brno  551325     40711   CZ0642 Brno-město     3115      CZ064
-    ## 3     Brno  551198     40711   CZ0642 Brno-město     3115      CZ064
-    ## 4     Brno  551066     40711   CZ0642 Brno-město     3115      CZ064
-    ## 5     Brno  551317     40711   CZ0642 Brno-město     3115      CZ064
-    ## 6     Brno  551376     40711   CZ0642 Brno-město     3115      CZ064
-    ##          NAZ_CZNUTS        SX       SY SHAPE_Leng SHAPE_Area id population
-    ## 1 Jihomoravský kraj -600545.2 -1163337   10195.83    3017709  8      13026
-    ## 2 Jihomoravský kraj -604417.9 -1161660   13888.64    7147886 24       2366
-    ## 3 Jihomoravský kraj -607059.7 -1155566   39812.76   27242244 13      23539
-    ## 4 Jihomoravský kraj -595373.0 -1162892   10449.32    6291806  6       6955
-    ## 5 Jihomoravský kraj -595592.3 -1168729   16026.03    9492907 23       3187
-    ## 6 Jihomoravský kraj -600046.7 -1152829   10054.77    2446103 26       1672
-    ##                         geometry
-    ## 1 POLYGON ((-601002.7 -116196...
-    ## 2 POLYGON ((-605152.2 -116007...
-    ## 3 POLYGON ((-608145.9 -115048...
-    ## 4 POLYGON ((-596356.1 -116148...
-    ## 5 POLYGON ((-596347.5 -116673...
-    ## 6 POLYGON ((-599444.4 -115172...
+<table>
+<caption>Brno municipality data</caption>
+<thead>
+<tr class="header">
+<th align="left">NAZ_ZUJ</th>
+<th align="right">OBJECTID</th>
+<th align="left">KOD_MOaMC</th>
+<th align="left">NAZ_ZKR_MO</th>
+<th align="left">NAZ_MOaMC</th>
+<th align="left">KOD_OBEC</th>
+<th align="left">NAZ_OBEC</th>
+<th align="left">KOD_ZUJ</th>
+<th align="left">KOD_OKRES</th>
+<th align="left">KOD_LAU1</th>
+<th align="left">NAZ_LAU1</th>
+<th align="left">KOD_KRAJ</th>
+<th align="left">KOD_CZNUTS</th>
+<th align="left">NAZ_CZNUTS</th>
+<th align="right">SX</th>
+<th align="right">SY</th>
+<th align="right">SHAPE_Leng</th>
+<th align="right">SHAPE_Area</th>
+<th align="right">id</th>
+<th align="right">population</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bohunice</td>
+<td align="right">76</td>
+<td align="left">551082</td>
+<td align="left">Brno-Bohunice</td>
+<td align="left">Brno-Bohunice</td>
+<td align="left">582786</td>
+<td align="left">Brno</td>
+<td align="left">551082</td>
+<td align="left">40711</td>
+<td align="left">CZ0642</td>
+<td align="left">Brno-město</td>
+<td align="left">3115</td>
+<td align="left">CZ064</td>
+<td align="left">Jihomoravský kraj</td>
+<td align="right">-600545.2</td>
+<td align="right">-1163337</td>
+<td align="right">10195.83</td>
+<td align="right">3017709</td>
+<td align="right">8</td>
+<td align="right">13026</td>
+</tr>
+<tr class="even">
+<td align="left">Bosonohy</td>
+<td align="right">92</td>
+<td align="left">551325</td>
+<td align="left">Brno-Bosonohy</td>
+<td align="left">Brno-Bosonohy</td>
+<td align="left">582786</td>
+<td align="left">Brno</td>
+<td align="left">551325</td>
+<td align="left">40711</td>
+<td align="left">CZ0642</td>
+<td align="left">Brno-město</td>
+<td align="left">3115</td>
+<td align="left">CZ064</td>
+<td align="left">Jihomoravský kraj</td>
+<td align="right">-604417.9</td>
+<td align="right">-1161660</td>
+<td align="right">13888.64</td>
+<td align="right">7147886</td>
+<td align="right">24</td>
+<td align="right">2366</td>
+</tr>
+<tr class="odd">
+<td align="left">Bystrc</td>
+<td align="right">81</td>
+<td align="left">551198</td>
+<td align="left">Brno-Bystrc</td>
+<td align="left">Brno-Bystrc</td>
+<td align="left">582786</td>
+<td align="left">Brno</td>
+<td align="left">551198</td>
+<td align="left">40711</td>
+<td align="left">CZ0642</td>
+<td align="left">Brno-město</td>
+<td align="left">3115</td>
+<td align="left">CZ064</td>
+<td align="left">Jihomoravský kraj</td>
+<td align="right">-607059.7</td>
+<td align="right">-1155566</td>
+<td align="right">39812.76</td>
+<td align="right">27242244</td>
+<td align="right">13</td>
+<td align="right">23539</td>
+</tr>
+<tr class="even">
+<td align="left">Černovice</td>
+<td align="right">74</td>
+<td align="left">551066</td>
+<td align="left">Brno-Černovice</td>
+<td align="left">Brno-Černovice</td>
+<td align="left">582786</td>
+<td align="left">Brno</td>
+<td align="left">551066</td>
+<td align="left">40711</td>
+<td align="left">CZ0642</td>
+<td align="left">Brno-město</td>
+<td align="left">3115</td>
+<td align="left">CZ064</td>
+<td align="left">Jihomoravský kraj</td>
+<td align="right">-595373.0</td>
+<td align="right">-1162892</td>
+<td align="right">10449.32</td>
+<td align="right">6291806</td>
+<td align="right">6</td>
+<td align="right">6955</td>
+</tr>
+<tr class="odd">
+<td align="left">Chrlice</td>
+<td align="right">91</td>
+<td align="left">551317</td>
+<td align="left">Brno-Chrlice</td>
+<td align="left">Brno-Chrlice</td>
+<td align="left">582786</td>
+<td align="left">Brno</td>
+<td align="left">551317</td>
+<td align="left">40711</td>
+<td align="left">CZ0642</td>
+<td align="left">Brno-město</td>
+<td align="left">3115</td>
+<td align="left">CZ064</td>
+<td align="left">Jihomoravský kraj</td>
+<td align="right">-595592.3</td>
+<td align="right">-1168729</td>
+<td align="right">16026.03</td>
+<td align="right">9492907</td>
+<td align="right">23</td>
+<td align="right">3187</td>
+</tr>
+<tr class="even">
+<td align="left">Ivanovice</td>
+<td align="right">94</td>
+<td align="left">551376</td>
+<td align="left">Brno-Ivanovice</td>
+<td align="left">Brno-Ivanovice</td>
+<td align="left">582786</td>
+<td align="left">Brno</td>
+<td align="left">551376</td>
+<td align="left">40711</td>
+<td align="left">CZ0642</td>
+<td align="left">Brno-město</td>
+<td align="left">3115</td>
+<td align="left">CZ064</td>
+<td align="left">Jihomoravský kraj</td>
+<td align="right">-600046.7</td>
+<td align="right">-1152829</td>
+<td align="right">10054.77</td>
+<td align="right">2446103</td>
+<td align="right">26</td>
+<td align="right">1672</td>
+</tr>
+</tbody>
+</table>
 
 <br>
 

@@ -1,7 +1,7 @@
 ---
 title: "Brno Traffic Accidents"
 subtitle: "[DATASET]"
-date: "2019-01-23"
+date: "2019-01-24"
 
 weight: 2
 
@@ -72,6 +72,170 @@ Get the data for the accidents
     df.accidents %<>%
       mutate_at(vars(day.of.the.week), funs(str_sub(., end = 3L)))
 
+Take a glance at the data
+
+<table>
+<caption>Brno traffic accidents data</caption>
+<thead>
+<tr class="header">
+<th align="right">objectid</th>
+<th align="left">date</th>
+<th align="right">dead</th>
+<th align="right">serious.injuries</th>
+<th align="right">light.injuries</th>
+<th align="left">day.of.the.week</th>
+<th align="left">day/night</th>
+<th align="left">type.of.the.accident</th>
+<th align="left">cause.of.the.accident</th>
+<th align="left">alcohol.or.drugs</th>
+<th align="left">weather.conditions</th>
+<th align="left">place</th>
+<th align="left">vehicle.type</th>
+<th align="left">vehicle.characteristic</th>
+<th align="left">skid</th>
+<th align="right">total.damage.in.czk</th>
+<th align="right">x</th>
+<th align="right">y</th>
+<th align="right">lat</th>
+<th align="right">lng</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">12/31/2017</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">Sun</td>
+<td align="left">Night</td>
+<td align="left">Collision with a fixed obstacle</td>
+<td align="left">The driver of the motor vehicle</td>
+<td align="left">No</td>
+<td align="left">Clear</td>
+<td align="left">None or none of listed</td>
+<td align="left">Passenger car without a trailer</td>
+<td align="left">Private company</td>
+<td align="left">No</td>
+<td align="right">70000</td>
+<td align="right">1853598</td>
+<td align="right">6307110</td>
+<td align="right">-1161745</td>
+<td align="right">-595202.8</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">12/31/2017</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">Sun</td>
+<td align="left">Day</td>
+<td align="left">Collision with a tram</td>
+<td align="left">The driver of the motor vehicle</td>
+<td align="left">No</td>
+<td align="left">Clear</td>
+<td align="left">Exit from the car park, forest roads, etc.</td>
+<td align="left">Passenger car without a trailer</td>
+<td align="left">Private, not used for business activity</td>
+<td align="left">No</td>
+<td align="right">10000</td>
+<td align="right">1850300</td>
+<td align="right">6306322</td>
+<td align="right">-1162025</td>
+<td align="right">-597405.1</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">12/31/2017</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">Sun</td>
+<td align="left">Night</td>
+<td align="left">Collision with a parked vehicle</td>
+<td align="left">The driver of the motor vehicle</td>
+<td align="left">Not tested</td>
+<td align="left">Clear</td>
+<td align="left">None or none of listed</td>
+<td align="left">Not identified, the driver has fled</td>
+<td align="left">Not identified</td>
+<td align="left">No</td>
+<td align="right">0</td>
+<td align="right">1856192</td>
+<td align="right">6310268</td>
+<td align="right">-1159877</td>
+<td align="right">-593294.7</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">12/30/2017</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">Sat</td>
+<td align="left">Day</td>
+<td align="left">Collision with a parked vehicle</td>
+<td align="left">The driver of the motor vehicle</td>
+<td align="left">Under influence of alcohol</td>
+<td align="left">Clear</td>
+<td align="left">None or none of listed</td>
+<td align="left">Passenger car without a trailer</td>
+<td align="left">Private, not used for business activity</td>
+<td align="left">No</td>
+<td align="right">10000</td>
+<td align="right">1848384</td>
+<td align="right">6311574</td>
+<td align="right">-1158483</td>
+<td align="right">-598283.6</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">12/30/2017</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">Sat</td>
+<td align="left">Night</td>
+<td align="left">Collision with a parked vehicle</td>
+<td align="left">The driver of the motor vehicle</td>
+<td align="left">Not tested</td>
+<td align="left">Clear</td>
+<td align="left">None or none of listed</td>
+<td align="left">Not identified, the driver has fled</td>
+<td align="left">Not identified</td>
+<td align="left">No</td>
+<td align="right">0</td>
+<td align="right">1844027</td>
+<td align="right">6311634</td>
+<td align="right">-1158137</td>
+<td align="right">-601113.3</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">12/30/2017</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">Sat</td>
+<td align="left">Night</td>
+<td align="left">Crash</td>
+<td align="left">The driver of the motor vehicle</td>
+<td align="left">No</td>
+<td align="left">Other dificult</td>
+<td align="left">Parking slot adjacent to the road</td>
+<td align="left">Truck</td>
+<td align="left">Private company</td>
+<td align="left">Yes</td>
+<td align="right">10000</td>
+<td align="right">1849741</td>
+<td align="right">6312159</td>
+<td align="right">-1158199</td>
+<td align="right">-597359.9</td>
+</tr>
+</tbody>
+</table>
+
 Plot by collision type
 ----------------------
 
@@ -84,7 +248,7 @@ Plot by collision type
         title = "Brno Accidents",
         subtitle = "by Collision Type")
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-8-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-9-1.png)
 
       theme(
         plot.title = element_text(hjust = 0.5),
@@ -102,11 +266,11 @@ By collision place
       theme(
         plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5),
-        
+
         axis.ticks.x = element_blank()
       )
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-9-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-10-1.png)
 
 By vehicle type
 
@@ -119,12 +283,12 @@ By vehicle type
       theme(
         plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5),
-        
+
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank()
       )
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-11-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-12-1.png)
 
 We can also to go interactive here (but note that the identifiers are
 quite long)
@@ -145,7 +309,7 @@ First classify by day of the week
                  show.legend = F) +
       labs(color = "Day of the week")
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-13-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-14-1.png)
 
 Or by number of injuries
 
@@ -162,7 +326,7 @@ Or by number of injuries
         plot.subtitle = element_text(hjust = 0.5)
       )
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-15-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-16-1.png)
 
 Explore map data with heatmap-ish points
 ----------------------------------------
@@ -177,7 +341,7 @@ Explore map data with heatmap-ish points
       ) +
       scale_color_identity()
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-16-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-17-1.png)
 
 Overlay intensity and the base map
 
@@ -191,7 +355,7 @@ Overlay intensity and the base map
 
     ggdraw(map.base) + draw_plot(map.heat)
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-17-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-18-1.png)
 
 Interactive plots
 -----------------
@@ -236,7 +400,7 @@ We need to set WGS84 CRS (the default)
       addResetMapButton() %>%
       addScaleBar(position = 'bottomleft')
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-19-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-20-1.png)
 
 Kepler.gl
 ---------

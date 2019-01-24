@@ -84,8 +84,6 @@ transform_crs <- function(
 
   d <- spTransform(d, CRS(to_crs))
 
-  show(head(d))
-
   if (drop) {
     .data %<>% select(-c(!!lng, !!lat)) %>% mutate(lat = d$lat, lng = d$lng)
   } else {
@@ -178,6 +176,13 @@ df.accidents %<>%
   mutate_at(vars(day.of.the.week), funs(str_sub(., end = 3L)))
 ```
 
+Take a glance at the data
+
+```{r, echo=FALSE, results='asis'}
+as.data.frame(head(df.accidents)) %>%
+  knitr::kable(caption = "Brno traffic accidents data")
+```
+
 ```{r, include=FALSE}
 
 # base map
@@ -244,7 +249,7 @@ ggplot(data = df.accidents) +
   theme(
     plot.title = element_text(hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5),
-    
+
     axis.ticks.x = element_blank()
   )
 ```
@@ -261,7 +266,7 @@ p <- ggplot(data = df.accidents) +
   theme(
     plot.title = element_text(hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5),
-    
+
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank()
   )

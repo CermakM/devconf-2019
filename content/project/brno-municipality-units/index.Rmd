@@ -85,8 +85,6 @@ transform_crs <- function(
 
   d <- spTransform(d, CRS(to_crs))
 
-  show(head(d))
-
   if (drop) {
     .data %<>% select(-c(!!lng, !!lat)) %>% mutate(lat = d$lat, lng = d$lng)
   } else {
@@ -98,6 +96,8 @@ transform_crs <- function(
 ```
 
 Get the shape files for Brno base map
+
+> Data is available at: [arcdata.opendata](http://arccr-arcdata.opendata.arcgis.com/datasets/34ee5c20c3b54e6b82fd111d01905843_7)
 
 ```{r}
 
@@ -112,6 +112,8 @@ df.brno.moc$NAZ_ZUJ <- df.brno.moc$NAZ_ZUJ %>%
   sapply(str_to_title) %>%
   str_replace("^.*?-", "")
 
+# this dataset has been created by hand
+# from https://data.brno.cz/zpravy-o-stavu-mesta/zprava-o-stavu-mesta-2018/ (PDF)
 df.brno.obyv <- read_csv("data/brno_data/spravni_jednotky_obyvatele.csv")
 
 df.brno <- merge(df.brno.moc, df.brno.obyv, by.x = "NAZ_ZUJ", by.y = "districts")
@@ -119,8 +121,10 @@ df.brno <- merge(df.brno.moc, df.brno.obyv, by.x = "NAZ_ZUJ", by.y = "districts"
 
 Peek at the data
 
-```{r, results=T}
-head(df.brno)
+```{r, echo=FALSE, results='asis'}
+as.data.frame(head(df.brno)) %>%
+  select(-c(geometry)) %>%
+  knitr::kable(caption = "Brno municipality data")
 ```
 
 <br>

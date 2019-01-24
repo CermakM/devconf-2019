@@ -1,5 +1,20 @@
+pre {
+  magin: 30px;
+}
+
+table {
+  display: block;
+  font-size: 0.65rem;
+  overflow-x: auto;
+}
+
+.article-container {
+  max-width: 70%;
+}
+
 .hljs {
   background: inherit;
+  max-height: 800px;
 }
 
 @font-face {
