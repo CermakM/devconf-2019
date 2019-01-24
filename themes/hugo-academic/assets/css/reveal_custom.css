@@ -1,3 +1,7 @@
+.reveal .slides > section, .slides > section > section {
+  width: 90%;
+}
+
 .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
   margin: 0 0 5% 0;
 }
@@ -91,8 +95,18 @@
   text-align: center;
 }
 
-.reveal section div.goto.next a:hover {
+.reveal section div.goto a:hover {
   color: inherit;
+}
+
+.reveal section .slides-nav {
+  display: flex;
+  align-content: flex-end;
+  justify-content: space-between;
+}
+
+.reveal section .slides-nav .fig-col {
+  width: 30%;
 }
 
 @font-face {

@@ -1,5 +1,5 @@
 +++
-title = "Slides"
+title = "Open Data"
 language = 'en'
 
 [slides]
@@ -11,6 +11,8 @@ theme = "white"
 <!-- source: https://opendata.gov.cz/informace:start -->
 
 # Open Data
+
+{{< slides_nav >}}
 
 ---
 
@@ -451,26 +453,9 @@ In principal, making data publicly available is merely posting them in its raw f
 
 ---
 
-{{% section %}}
-
 # Thank You!
 
----
-
-<div class="goto next fig-col">
-<div class="fig-img">
-<span style="font-size: 3em; color: Tomato; width: 100px; ">
-  <a href='{{< ref "brno-data.md" >}}'>
-  <i class="fas fa-forward"></i>
-  </a>
-</span>
-</div>
-<div class="fig-caption">
-Next: <a style="margin-left: 5px;" href='{{< ref "brno-data.md" >}}'>Brno Data</a>
-</div>
-</div>
-
-{{% /section %}}
+{{< slides_nav >}}
 
 ---
 
@@ -480,8 +465,6 @@ Next: <a style="margin-left: 5px;" href='{{< ref "brno-data.md" >}}'>Brno Data</
 - https://5stardata.info/en/
 - https://www.webfirst.com/services/open-data-solutions
 - https://opendata.gov.cz/informace:d%C5%AFle%C5%BEit%C3%A9-pojmy-v-oblasti-otev%C5%99en%C3%BDch-dat
-
----
 
 <!--
 ## Themes

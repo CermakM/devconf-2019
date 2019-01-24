@@ -1,5 +1,5 @@
 +++
-title = "Slides"
+title = "Brno Data"
 language = 'en'
 
 [slides]
@@ -12,6 +12,8 @@ theme = "white"
 <div class="hashtag-brno2050" style="font-family: Hashtag; font-size: 4rem;">
   <a href="https://www.instagram.com/explore/tags/brno2050/"> #brno2050 </a>
 </div>
+
+{{< slides_nav >}}
 
 ---
 
@@ -302,13 +304,11 @@ I.e., data that is expected to be present, is not:
 
 # Thank You!
 
-<!-- TODO: goto -->
+{{< slides_nav >}}
 
 ---
 
 ## Resources
-
----
 
 <!--
 ## Themes

@@ -4,7 +4,7 @@ title = "Brno Data"
 weight = 2
 
 # Date this page was created.
-date = 2016-04-27T00:00:00
+date = 2019-01-24T00:00:00
 
 # Project summary to display on homepage.
 summary = "About _Brno Data_"
