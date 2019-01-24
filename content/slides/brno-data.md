@@ -214,13 +214,51 @@ colnames(dat)
 
 ---
 
-### Sometimes, too _"user friendly"_
+### Poor ontology / schema or inconsistency in data
 
-<div class="fig-img">
 {{% fragment %}}
-{{< figure src="brno-data-user-friendly.png" library="true" >}}
+```r
+> dat$Předmět.zájmu.pachatele.nebo.vztah.pachatele.k.oběti...text %>%
+>   factor() %>%
+>   levels()
+
+  [1] "airbagy"                                              "antiradary"
+  [3] "bankomaty"                                            "barevné kovy,výrobky a odpad z nich"
+  [5] "bez vztahu"                                           "bílé rase"
+  [7] "bižuterie"                                            "bratr"
+  ...
+ [23] "dítě ve vzdál.poměru (synovec,neteř...)"              "dítě ve vzt. ke známé osobě (soused,známý)"
+ [25] "dítě ve vztahu spolužáka,kamaráda"                    "dítě,kde jeden z rodičů je druh-družka,přítel"
+ ....
+ [95] "manžel"                                               "manželka"
+ [97] "masné konzervy a hotová jídla v konzervách"           "matka"
+ ....
+[115] "nátěrové hmoty,latexy,klihy,lepidla,barviva"          "nic"
+.....
+[145] "ostatní - zásilky a přepravované věci"                "ostatní - zbraně /mimo historických/"
+[147] "ostatní - zemědělské výrobky a výr. těžby dřeva"      "ostatní - zvířectvo včetně včelstva"
+[149] "ostatní -osobní doklady a předtisky"                  "ostatní -starožitnosti, umělecké předměty"
+[151] "ostatní -tabákové výrobky"                            "ostatní (kopie filmů,hračky,společen.hry)"
+.....
+[243] "vniknutí do obydlí za užití lsti - útoky na senior"   "výbušniny a pyrotech. výrobky"
+.....
+[261] "zlato zpracované a klenoty,šperky"                    "žlutohnědé rase / indiáni, asiati, australští dom."
+[263] "zobrazovací zařízení /terminál,monitor/"              "zvěř spárkatá /tuzemská/"
+>
+```
 {{% /fragment %}}
-</div>
+
+---
+
+### Still not enough data
+
+I.e., data that is expected to be present, is not:
+
+- city state reports in machine-readable format
+- population data
+- transport data
+- urban grid (?)
+- shapefiles
 
 ---
 
@@ -234,23 +272,21 @@ colnames(dat)
 
 ---
 
+### Sometimes, too _"user friendly"_
+
+<div class="fig-img">
+{{% fragment %}}
+{{< figure src="brno-data-user-friendly.png" library="true" >}}
+{{% /fragment %}}
+</div>
+
+---
+
 ### Dashboard Applications built on proprietary software ([ESRI](https://www.esri.com/en-us/home0))
 
 ---
 
 ### Most of the data available in Czech language only
-
----
-
-### Still not enough data
-
-I.e., data that is expected to be present, is not:
-
-- city state reports in machine-readable format
-- population data
-- transport data
-- urban grid (?)
-- shapefiles
 
 ---
 

@@ -200,6 +200,12 @@ Leaflet
 
 > ⚠ NOTE: will be rendered as JPEG in embedded markdown notebooks) ⚠
 
+We need to set WGS84 CRS (the default)
+
+    df.accidents <- transform_crs(df.accidents,
+                                  from_crs = get_proj4string(3857),
+                                  lng = x, lat = y, drop = F)
+
 
     library(leaflet)
     library(leaflet.extras)
@@ -230,7 +236,7 @@ Leaflet
       addResetMapButton() %>%
       addScaleBar(position = 'bottomleft')
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-18-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-19-1.png)
 
 Kepler.gl
 ---------
