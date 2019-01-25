@@ -449,6 +449,48 @@ In principal, making data publicly available is merely posting them in its raw f
 
 ---
 
+## Call to arms
+
+<h5> To be: </h5>
+
+<ul>
+{{% fragment %}}
+<li>curious consumer</li>
+{{% /fragment %}}
+{{% fragment %}}
+<li> smart architect</li>
+{{% /fragment %}}
+{{% fragment %}}
+<li> responsible and aware publisher</li>
+{{% /fragment %}}
+{{% fragment %}}
+<li> forthcoming maintainer</li>
+{{% /fragment %}}
+</ul>
+
+<br>
+
+{{% fragment %}}
+<h5> I don't think anymore, that: </h5>
+{{% /fragment %}}
+
+<ul>
+{{% fragment %}}
+<li>open data is a buzzword I don't really understand</li>
+{{% /fragment %}}
+{{% fragment %}}
+<li>open data is any data published under open license</li>
+{{% /fragment %}}
+{{% fragment %}}
+<li>I am satisfied with data being only in PDF</li>
+{{% /fragment %}}
+{{% fragment %}}
+<li>I can put the whole sentence as a column name and don't piss anyone off</li>
+{{% /fragment %}}
+</ul>
+
+---
+
 ## FAQ
 
 ---

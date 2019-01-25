@@ -300,6 +300,25 @@ I.e., data that is expected to be present, is not:
 
 ---
 
+## Call to arms
+
+Go to [DATA.BRNO](https://data.brno.cz/), and:
+
+- take a look at the apps
+- see which data sets are offered
+- take your time to explore and _play_ with the data
+
+{{% fragment %}}
+<br>
+and most importantly:
+{{% / fragment %}}
+
+{{% fragment %}}
+- give your [feedback](https://data.brno.cz/feedback/) if something is (not) right
+{{% / fragment %}}
+
+---
+
 ## FAQ
 
 ---
