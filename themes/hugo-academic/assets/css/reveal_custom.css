@@ -1,19 +1,24 @@
-.reveal .slides > section, .slides > section > section {
-  width: 90%;
-}
-
 .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
   margin: 0 0 5% 0;
-}
-
-.reveal section {
-  margin-left: 30px;
-  font-size: 1.5rem;
 }
 
 .reveal pre code {
   padding: 15px;
   max-height: auto !important;
+}
+
+.reveal .slides > section, .slides > section > section {
+  width: 90%;
+}
+
+.reveal .progress {
+  top: 0;
+  height: 7px
+}
+
+.reveal section {
+  margin-left: 30px;
+  font-size: 1.5rem;
 }
 
 .reveal section div.fig-gallery {

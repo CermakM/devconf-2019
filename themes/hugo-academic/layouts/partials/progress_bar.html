@@ -1,0 +1,40 @@
+<style type="text/css">
+
+/* The progress container (grey background) */
+.progress-container {
+  width: 100%;
+  height: 8px;
+  z-index: 1;
+  position: fixed;
+  background: #ccc;
+}
+
+/* The progress bar (scroll indicator) */
+.progress-bar {
+  height: 10px;
+  background: #4caf50;
+  width: 0%;
+}
+</style>
+
+<script type="text/javascript">
+
+  function show_progress() {
+
+    var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var scrolled = (winScroll / height) * 100;
+    document.getElementsByClassName("progress-bar")[0].style.width = scrolled + "%";
+
+  }
+
+  // When the user scrolls the page, execute myFunction
+  window.onscroll = function() {
+    show_progress();
+  };
+
+</script>
+
+<div class="progress-container">
+  <div class="progress-bar"></div>
+</div>
