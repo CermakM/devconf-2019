@@ -1,7 +1,7 @@
 +++
 # Projects widget.
 widget = "presentations"
-active = true
+active = false
 date = 2016-04-20T00:00:00
 
 title = "Presentations"
@@ -39,7 +39,7 @@ filter_default = 0
 [[filter]]
   name = "All"
   tag = "*"
-  
+
 [[filter]]
   name = "Brno"
   tag = "brno"
@@ -47,7 +47,7 @@ filter_default = 0
 [[filter]]
   name = "Open Data"
   tag = "open-data"
-  
+
 [[filter]]
   name = "Traffic"
   tag = "traffic"
@@ -55,7 +55,7 @@ filter_default = 0
 [[filter]]
   name = "Crime"
   tag = "crime"
-  
+
 [[filter]]
   name = "Population"
   tag = "population"
@@ -63,6 +63,4 @@ filter_default = 0
 [[filter]]
   name = "Dataset"
   tag = "dataset"
-
 +++
-
