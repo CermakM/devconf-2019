@@ -230,10 +230,11 @@ ggplot(data = df.accidents) +
   ylab("Number of Accidents") +
   labs(
     title = "Brno Accidents",
-    subtitle = "by Collision Type")
+    subtitle = "by Collision Type"
+  ) +
   theme(
     plot.title = element_text(hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
   )
 ```
 
@@ -289,12 +290,27 @@ We can also to go interactive here (but note that the identifiers are quite long
 First classify by day of the week
 
 ```{r}
+ggplot(data = df.accidents, aes(x = day.of.the.week)) +
+  geom_bar(aes(fill = day.of.the.week)) +
+  ylab("Number of accidents") +
+  xlab("Day of the week") +
+  labs(title = "Brno Traffic Accidents",
+       fill = "Day of the week") +
+  theme(
+    plot.background = element_blank(), 
+    
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+```
+
+```{r}
 map.base +
   geom_point(data = df.accidents, aes(x = lng, y = lat, color = factor(day.of.the.week)), alpha=0.8) +
   geom_label(data = df.brno, aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=0.4),
              label.size = 0.15,
              show.legend = F) +
-  labs(color = "Day of the week")
+  labs(title = "Brno Traffic Accidents", color = "Day of the week")
 ```
 
 Or by number of injuries
@@ -307,7 +323,7 @@ map.accidents <- map.base +
              show.legend = F) +
   scale_color_gradient(low = '#ffffb2', high = '#b30000', guide = 'legend') +
   labs(color = "Injuries", size = "Injuries") +
-  labs(title = "Brno Accidents") +
+  labs(title = "Brno Traffic Accidents") +
   theme(
     plot.title = element_text(hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5)

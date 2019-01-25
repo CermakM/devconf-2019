@@ -1,7 +1,7 @@
 ---
 title: "Brno Traffic Accidents"
 subtitle: "[DATASET]"
-date: "2019-01-24"
+date: "2019-01-25"
 
 weight: 2
 
@@ -246,14 +246,14 @@ Plot by collision type
       ylab("Number of Accidents") +
       labs(
         title = "Brno Accidents",
-        subtitle = "by Collision Type")
-
-![](project/brno-traffic-accidents/figure/unnamed-chunk-9-1.png)
-
+        subtitle = "by Collision Type"
+      ) +
       theme(
         plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)
       )
+
+![](project/brno-traffic-accidents/figure/unnamed-chunk-9-1.png)
 
 By collision place
 
@@ -302,14 +302,29 @@ Go back to our Brno base map and let's plot geo
 
 First classify by day of the week
 
+    ggplot(data = df.accidents, aes(x = day.of.the.week)) +
+      geom_bar(aes(fill = day.of.the.week)) +
+      ylab("Number of accidents") +
+      xlab("Day of the week") +
+      labs(title = "Brno Traffic Accidents",
+           fill = "Day of the week") +
+      theme(
+        plot.background = element_blank(), 
+        
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)
+      )
+
+![](project/brno-traffic-accidents/figure/unnamed-chunk-14-1.png)
+
     map.base +
       geom_point(data = df.accidents, aes(x = lng, y = lat, color = factor(day.of.the.week)), alpha=0.8) +
       geom_label(data = df.brno, aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=0.4),
                  label.size = 0.15,
                  show.legend = F) +
-      labs(color = "Day of the week")
+      labs(title = "Brno Traffic Accidents", color = "Day of the week")
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-14-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-15-1.png)
 
 Or by number of injuries
 
@@ -320,13 +335,13 @@ Or by number of injuries
                  show.legend = F) +
       scale_color_gradient(low = '#ffffb2', high = '#b30000', guide = 'legend') +
       labs(color = "Injuries", size = "Injuries") +
-      labs(title = "Brno Accidents") +
+      labs(title = "Brno Traffic Accidents") +
       theme(
         plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5)
       )
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-16-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-17-1.png)
 
 Explore map data with heatmap-ish points
 ----------------------------------------
@@ -341,7 +356,7 @@ Explore map data with heatmap-ish points
       ) +
       scale_color_identity()
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-17-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-18-1.png)
 
 Overlay intensity and the base map
 
@@ -355,7 +370,7 @@ Overlay intensity and the base map
 
     ggdraw(map.base) + draw_plot(map.heat)
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-18-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-19-1.png)
 
 Interactive plots
 -----------------
@@ -400,7 +415,7 @@ We need to set WGS84 CRS (the default)
       addResetMapButton() %>%
       addScaleBar(position = 'bottomleft')
 
-![](project/brno-traffic-accidents/figure/unnamed-chunk-20-1.png)
+![](project/brno-traffic-accidents/figure/unnamed-chunk-21-1.png)
 
 Kepler.gl
 ---------
