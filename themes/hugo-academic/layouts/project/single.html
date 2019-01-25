@@ -1,6 +1,8 @@
 {{ partial "header.html" . }}
 {{ partial "navbar.html" . }}
-{{ partial "progress_bar.html" .}}
+{{ if .Site.Params.projects.progress_bar }}
+  {{ partial "progress_bar.html" .}}
+{{ end }}
 
 <style type="text/css">
 

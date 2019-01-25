@@ -236,6 +236,9 @@ enableGitInfo = false
     #   2 = Stream
     talk_format = 2
 
+    # Use progress bar (default True)
+    progress_bar = true
+
   # Social/Academic Networking
   #
   # Icon pack "fab" includes the following social network icons:
