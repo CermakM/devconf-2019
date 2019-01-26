@@ -44,11 +44,14 @@ library(tidyverse)
 library(magrittr)
 library(wrapr)
 
+# plots
 library(cowplot)
 library(ggplot2)
-
 library(plotly)
 library(formattable)
+
+# colors
+library(scales)
 
 # custom color scale
 # inspired by https://github.com/drsimonj/blogR/blob/master/Rmd/creating_corporate_colors_ggplot2.Rmd
@@ -131,6 +134,101 @@ dat %<>%
 ## reorder factors
 dat$crime.category %<>% factor(unique(assign_crime_cat(seq(1, 1000, 50))))
 ```
+
+
+Plot as a time series for general overview (would be great interactively)
+
+```{r}
+dat.count <- dat %>%
+  # convert into date type
+  mutate(date = as.Date(Datum.spáchání.činu..či.zahájení.konání, format = "%m/%d/%Y")) %>%
+  # group by date
+  group_by(date) %>%
+  # count accidents
+  count()
+
+p <- ggplot(data = dat.count) +
+  geom_line(aes(x = date, y = n)) +
+  xlab("Date when the crime was commited ") +
+  ylab("Number of Crimes") +
+  labs(
+    title = "Brno Crimes"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+```
+
+```{r, echo=FALSE}
+p  # ggplotly(p) for interactive
+```
+
+We can "zoom" on the most recent events
+
+```{r}
+dat.count.2010ge <- dat.count[format(dat.count$date, format = "%Y") %>% as.numeric() >= 2010,]
+dat.count.2015ge <- dat.count[format(dat.count$date, format = "%Y") %>% as.numeric() >= 2015,]
+
+ggplot(data = dat.count.2010ge) +
+  geom_line(aes(x = date, y = n)) +
+  xlab("Date when the crime was commited ") +
+  ylab("Number of Crimes") +
+  labs(
+    title = "Brno Crimes >=2010"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+
+```
+
+```{r}
+plot.crime2015 <- ggplot(data = dat.count.2015ge) +
+  geom_line(aes(x = date, y = n)) +
+  xlab("Date when the crime was commited ") +
+  ylab("Number of Crimes") +
+  labs(
+    title = "Brno Crimes >=2015"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+```
+
+```{r, echo=FALSE}
+plot.crime2015
+```
+
+Color by season of the year
+
+```{r, echo=FALSE}
+dat.count.2015ge$season <- dat.count.2015ge$date %>%
+  format(format = "%m") %>% as.numeric() %.>%
+  case_when(
+    between(., 3, 5) ~ "spring",
+    between(., 6, 8) ~ "summer",
+    between(., 9, 11) ~ "fall",
+    T ~ "winter"
+  ) %>%
+  factor(levels = c("spring", "summer", "fall", "winter"))
+  
+ggplot(data = dat.count.2015ge) +
+  geom_col(aes(x = date, y = n, fill = season)) +
+  xlab("Date when the crime was commited ") +
+  ylab("Number of Crimes") +
+  labs(
+    title = "Brno Crimes >=2015",
+    fill = "Season of the year"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+```
+
 
 Plot crimes by category
 
@@ -306,18 +404,19 @@ plot.jitter
 
 ```{r}
 plot.dtotal <- ggplot(dat.total, aes(x = Základní.útvar.PČR..kde.došlo.k.činu,
-                      y = total.damage)) +
-  # geom_col(aes(fill = Základní.útvar.PČR..kde.došlo.k.činu)) +
+                                     y = total.damage)) +
+  # color by number of incidents to increase dimensionality
   geom_col(aes(fill = total.incidents)) +
   geom_hline(  # total mean line
     aes(yintercept = mean(total.damage)),
     alpha = 0.4,
     linetype = 'dashed') +
-  scale_fill_drsimonj(palette = 'cool', discrete = F) +
+  # scale_fill_drsimonj(palette = 'cool', discrete = F) +
+  scale_fill_gradient(trans = 'log10', low = muted('blue'), high = 'red') +
   ylab("Damage in millions (CZK)") +
   xlab("Brno organization unit") +
   labs(
-    fill = "Organization unit",
+    fill = "Number of incidents",
     title = "Total Damage caused by Crime Incident") +
   theme(
     axis.ticks.x = element_blank(),
@@ -343,17 +442,17 @@ plot.dtotal
 ```{r}
 plot.dpi <- ggplot(dat.total, aes(x = Základní.útvar.PČR..kde.došlo.k.činu,
                       y = total.damage.ratio)) +
-  # geom_col(aes(fill = Základní.útvar.PČR..kde.došlo.k.činu)) +
+  # color by number of incidents to increase dimensionality
   geom_col(aes(fill = total.incidents)) +
   geom_hline(  # total mean line
     aes(yintercept = mean(total.damage.ratio)),
     alpha = 0.4,
     linetype = 'dashed') +
-  scale_fill_drsimonj(palette = 'cool', discrete = F) +
+  scale_fill_gradient(trans = 'log10', low = muted('blue'), high = 'red') +
   ylab("Damage in CZK") +
   xlab("Brno organization unit") +
   labs(
-    fill = "Organization unit",
+    fill = "Number of incidents",
     title = "Total Damage per Crime Incident") +
   theme(
     axis.ticks.x = element_blank(),

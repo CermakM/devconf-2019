@@ -1,7 +1,7 @@
 ---
 title: "Brno Crime"
 subtitle: "[DATASET]"
-date: "2019-01-24"
+date: "2019-01-26"
 
 weight: 3
 
@@ -29,11 +29,14 @@ Let's start by including a few libraries ...
     library(magrittr)
     library(wrapr)
 
+    # plots
     library(cowplot)
     library(ggplot2)
-
     library(plotly)
     library(formattable)
+
+    # colors
+    library(scales)
 
     # custom color scale
     # inspired by https://github.com/drsimonj/blogR/blob/master/Rmd/creating_corporate_colors_ggplot2.Rmd
@@ -328,6 +331,68 @@ Categorize crimes
     ## reorder factors
     dat$crime.category %<>% factor(unique(assign_crime_cat(seq(1, 1000, 50))))
 
+Plot as a time series for general overview (would be great
+interactively)
+
+    dat.count <- dat %>%
+      # convert into date type
+      mutate(date = as.Date(Datum.spáchání.činu..či.zahájení.konání, format = "%m/%d/%Y")) %>%
+      # group by date
+      group_by(date) %>%
+      # count accidents
+      count()
+
+    p <- ggplot(data = dat.count) +
+      geom_line(aes(x = date, y = n)) +
+      xlab("Date when the crime was commited ") +
+      ylab("Number of Crimes") +
+      labs(
+        title = "Brno Crimes"
+      ) +
+      theme(
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)
+      )
+
+![](project/brno-crime/figure/unnamed-chunk-7-1.png)
+
+We can "zoom" on the most recent events
+
+    dat.count.2010ge <- dat.count[format(dat.count$date, format = "%Y") %>% as.numeric() >= 2010,]
+    dat.count.2015ge <- dat.count[format(dat.count$date, format = "%Y") %>% as.numeric() >= 2015,]
+
+    ggplot(data = dat.count.2010ge) +
+      geom_line(aes(x = date, y = n)) +
+      xlab("Date when the crime was commited ") +
+      ylab("Number of Crimes") +
+      labs(
+        title = "Brno Crimes >=2010"
+      ) +
+      theme(
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)
+      )
+
+![](project/brno-crime/figure/unnamed-chunk-8-1.png)
+
+    plot.crime2015 <- ggplot(data = dat.count.2015ge) +
+      geom_line(aes(x = date, y = n)) +
+      xlab("Date when the crime was commited ") +
+      ylab("Number of Crimes") +
+      labs(
+        title = "Brno Crimes >=2015"
+      ) +
+      theme(
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)
+      )
+
+![](project/brno-crime/figure/unnamed-chunk-10-1.png)
+
+Color by season of the year
+
+![](project/brno-crime/figure/unnamed-chunk-11-1.png)
+
 Plot crimes by category
 
     plot.crimes.by.category <- ggplot(dat, aes(x = factor(Takticko.statistická.klasifikace.činu))) +
@@ -348,7 +413,7 @@ Plot crimes by category
         title = "Crime in Brno by Category"
       )
 
-![](project/brno-crime/figure/unnamed-chunk-7-1.png)
+![](project/brno-crime/figure/unnamed-chunk-13-1.png)
 
 Damage caused by crime incidents
 --------------------------------
@@ -378,7 +443,7 @@ Initial exploration
         panel.background = element_blank()
       )
 
-![](project/brno-crime/figure/unnamed-chunk-9-1.png)
+![](project/brno-crime/figure/unnamed-chunk-15-1.png)
 
 As we can see, there are some incredible outliers, let's get rid of them
 by selecting .95p
@@ -418,7 +483,7 @@ And give it another shot, this time with coloring by density.
 
     plot.scatter
 
-![](project/brno-crime/figure/unnamed-chunk-12-1.png)
+![](project/brno-crime/figure/unnamed-chunk-18-1.png)
 
 Marginal density plot
 ---------------------
@@ -439,7 +504,7 @@ Marginal density plot
 
     ggdraw(insert_xaxis_grob(plot.scatter, plot.density))
 
-![](project/brno-crime/figure/unnamed-chunk-14-1.png)
+![](project/brno-crime/figure/unnamed-chunk-20-1.png)
 
 Comparison between Facets
 -------------------------
@@ -480,21 +545,22 @@ Comparison between Facets
           hjust = 0.5, vjust = 0.2, margin = margin(b = 20))
       )
 
-![](project/brno-crime/figure/unnamed-chunk-17-1.png)
+![](project/brno-crime/figure/unnamed-chunk-23-1.png)
 
     plot.dtotal <- ggplot(dat.total, aes(x = Základní.útvar.PČR..kde.došlo.k.činu,
-                          y = total.damage)) +
-      # geom_col(aes(fill = Základní.útvar.PČR..kde.došlo.k.činu)) +
+                                         y = total.damage)) +
+      # color by number of incidents to increase dimensionality
       geom_col(aes(fill = total.incidents)) +
       geom_hline(  # total mean line
         aes(yintercept = mean(total.damage)),
         alpha = 0.4,
         linetype = 'dashed') +
-      scale_fill_drsimonj(palette = 'cool', discrete = F) +
+      # scale_fill_drsimonj(palette = 'cool', discrete = F) +
+      scale_fill_gradient(trans = 'log10', low = muted('blue'), high = 'red') +
       ylab("Damage in millions (CZK)") +
       xlab("Brno organization unit") +
       labs(
-        fill = "Organization unit",
+        fill = "Number of incidents",
         title = "Total Damage caused by Crime Incident") +
       theme(
         axis.ticks.x = element_blank(),
@@ -512,21 +578,21 @@ Comparison between Facets
           hjust = 0.5, vjust = 0.2, margin = margin(b = 20))
       )
 
-![](project/brno-crime/figure/unnamed-chunk-19-1.png)
+![](project/brno-crime/figure/unnamed-chunk-25-1.png)
 
     plot.dpi <- ggplot(dat.total, aes(x = Základní.útvar.PČR..kde.došlo.k.činu,
                           y = total.damage.ratio)) +
-      # geom_col(aes(fill = Základní.útvar.PČR..kde.došlo.k.činu)) +
+      # color by number of incidents to increase dimensionality
       geom_col(aes(fill = total.incidents)) +
       geom_hline(  # total mean line
         aes(yintercept = mean(total.damage.ratio)),
         alpha = 0.4,
         linetype = 'dashed') +
-      scale_fill_drsimonj(palette = 'cool', discrete = F) +
+      scale_fill_gradient(trans = 'log10', low = muted('blue'), high = 'red') +
       ylab("Damage in CZK") +
       xlab("Brno organization unit") +
       labs(
-        fill = "Organization unit",
+        fill = "Number of incidents",
         title = "Total Damage per Crime Incident") +
       theme(
         axis.ticks.x = element_blank(),
@@ -544,7 +610,7 @@ Comparison between Facets
           hjust = 0.5, vjust = 0.2, margin = margin(b = 20))
       )
 
-![](project/brno-crime/figure/unnamed-chunk-21-1.png)
+![](project/brno-crime/figure/unnamed-chunk-27-1.png)
 
 Use cowplot to plot the partial plot
 
@@ -553,7 +619,7 @@ Use cowplot to plot the partial plot
               plot.dpi + guides(fill = FALSE),
               align = 'hv', nrow = 2)
 
-![](project/brno-crime/figure/unnamed-chunk-22-1.png)
+![](project/brno-crime/figure/unnamed-chunk-28-1.png)
 
 Stolen goods
 ------------
@@ -616,7 +682,7 @@ Plot interactively (if applicable)
 
     plot.stolen.goods  # (ggplotly(plot.stolen.goods))
 
-![](project/brno-crime/figure/unnamed-chunk-27-1.png)
+![](project/brno-crime/figure/unnamed-chunk-33-1.png)
 
 And what interests us the most.. which part of Brno has the highest criminality in general?
 -------------------------------------------------------------------------------------------
@@ -645,7 +711,7 @@ And what interests us the most.. which part of Brno has the highest criminality 
 
 Much better to explore these interactively (if possible)
 
-![](project/brno-crime/figure/unnamed-chunk-29-1.png)
+![](project/brno-crime/figure/unnamed-chunk-35-1.png)
 
 ### Geospatial
 
@@ -703,7 +769,7 @@ municipality units.
       theme_void() +
       theme(plot.title = element_text(hjust = 0.5))
 
-![](project/brno-crime/figure/unnamed-chunk-32-1.png)
+![](project/brno-crime/figure/unnamed-chunk-38-1.png)
 
 Fill by total damage
 
@@ -724,7 +790,7 @@ Fill by total damage
       theme_void() +
       theme(plot.title = element_text(hjust = 0.5))
 
-![](project/brno-crime/figure/unnamed-chunk-35-1.png)
+![](project/brno-crime/figure/unnamed-chunk-41-1.png)
 
 Fill by total number of crimes
 
@@ -742,7 +808,7 @@ Fill by total number of crimes
         plot.title = element_text(hjust = 0.5)
       )
 
-![](project/brno-crime/figure/unnamed-chunk-37-1.png)
+![](project/brno-crime/figure/unnamed-chunk-43-1.png)
 
 And the last, my favourite -- Wordcloud
 ---------------------------------------
@@ -786,7 +852,7 @@ Plot the wordcloud
       scale_size_area(max_size = 30) +
       theme_minimal()
 
-![](project/brno-crime/figure/unnamed-chunk-40-1.png)
+![](project/brno-crime/figure/unnamed-chunk-46-1.png)
 
 Color by total damage (DevConf style)
 
@@ -799,7 +865,7 @@ Color by total damage (DevConf style)
       theme_minimal() +
       scale_color_gradient(low = '#8e82e4', high = 'purple')
 
-![](project/brno-crime/figure/unnamed-chunk-41-1.png)
+![](project/brno-crime/figure/unnamed-chunk-47-1.png)
 
 Lets get fancy
 
@@ -815,7 +881,7 @@ Lets get fancy
       theme_minimal() +
       scale_color_gradient(low = 'darkred', high = 'red')
 
-![](project/brno-crime/figure/unnamed-chunk-43-1.png)
+![](project/brno-crime/figure/unnamed-chunk-49-1.png)
 
     brno.title <- ggdraw() + draw_label(
       "BRNO",
@@ -831,7 +897,7 @@ Lets get fancy
 
     plot_grid(brno.title, brno.emblem, ncol = 1, rel_heights = c(0.2, 1))
 
-![](project/brno-crime/figure/unnamed-chunk-45-1.png)
+![](project/brno-crime/figure/unnamed-chunk-51-1.png)
 
 Save the processed data (if applicable)
 
