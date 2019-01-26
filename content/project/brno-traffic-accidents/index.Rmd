@@ -196,29 +196,29 @@ map.base <- ggplot(data = df.brno[order(df.brno$population),]) +
   labs(title = "Brno Base Map")
 ```
 
-```{r, include=FALSE}
+## Plot accidents as a time series
 
-# population map
-map.population <- map.base +
-  geom_sf(aes(fill = population)) +
-  coord_sf(datum = NA) +
-  scale_fill_gradient(
-    low = muted('blue'), high = muted('red'),
-    breaks = round(sort(df.brno$population)[floor(split_points)], -3),
-    name = "Number of citizens",
-    guide = guide_legend(keyheight = unit(3, units = 'mm'), keywidth = unit(12, units = 'mm'),
-                         label.position = 'bottom',
-                         title.position = 'top',
-                         nrow = 1)
-    ) +
-  geom_label(aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=0.4), label.size = 0.15, show.legend = F) +
-  labs(title = "Brno Population per MOC") +
-  theme_void() +
+```{r}
+df.accidents.dates <- df.accidents %>%
+  # convert into date type
+  mutate(date = as.Date(date, format = "%m/%d/%Y")) %>%
+  # group by date
+  group_by(date) %>%
+  # count accidents
+  count()
+
+ggplot(data = df.accidents.dates) +
+  geom_line(aes(x = date, y = n)) +
+  xlab("Date") +
+  ylab("Number of Accidents") +
+  labs(
+    title = "Brno Accidents"
+  ) +
   theme(
-    plot.title = element_text(hjust = 0.5)
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
   )
 ```
-
 
 ## Plot by collision type
 

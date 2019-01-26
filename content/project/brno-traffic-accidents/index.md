@@ -1,7 +1,7 @@
 ---
 title: "Brno Traffic Accidents"
 subtitle: "[DATASET]"
-date: "2019-01-25"
+date: "2019-01-26"
 
 weight: 2
 
@@ -235,6 +235,31 @@ Take a glance at the data
 </tr>
 </tbody>
 </table>
+
+Plot accidents as a time series
+-------------------------------
+
+    df.accidents.dates <- df.accidents %>%
+      # convert into date type
+      mutate(date = as.Date(date, format = "%m/%d/%Y")) %>%
+      # group by date
+      group_by(date) %>%
+      # count accidents
+      count()
+
+    ggplot(data = df.accidents.dates) +
+      geom_line(aes(x = date, y = n)) +
+      xlab("Date") +
+      ylab("Number of Accidents") +
+      labs(
+        title = "Brno Accidents"
+      ) +
+      theme(
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)
+      )
+
+![](project/brno-traffic-accidents/figure/unnamed-chunk-8-1.png)
 
 Plot by collision type
 ----------------------
