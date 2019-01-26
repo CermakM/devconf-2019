@@ -117,6 +117,10 @@ df.brno.moc$NAZ_ZUJ <- df.brno.moc$NAZ_ZUJ %>%
 df.brno.obyv <- read_csv("data/brno_data/spravni_jednotky_obyvatele.csv")
 
 df.brno <- merge(df.brno.moc, df.brno.obyv, by.x = "NAZ_ZUJ", by.y = "districts")
+
+# for future usage (population density)
+df.brno %<>%
+  mutate(density = population * 1e6 / SHAPE_Area)  # person / km^2
 ```
 
 Peek at the data
@@ -132,7 +136,14 @@ as.data.frame(head(df.brno)) %>%
 ### Brno population
 
 
-Start simple
+Start simple and proceed from general information to more specific.
+
+Total number of Brno citizens:
+
+```{r}
+sum(df.brno$population)
+```
+
 
 ```{r}
 ggplot(data = df.brno) +
@@ -202,7 +213,7 @@ population_graph +
   geom_col(aes(fill = population)) +
   scale_fill_gradient(
     breaks = split_points,
-    low = muted('blue'), high = muted('red'),
+    low = muted('blue'), high = 'red',
     guide = 'legend')
 ```
 
@@ -251,7 +262,7 @@ map.population
 # population map
 map.population <- map.population +
   scale_fill_gradient(
-    low = muted('blue'), high = muted('red'),
+    low = muted('blue'), high = 'red',
     breaks = round(sort(df.brno$population)[floor(split_points)], -3),
     name = "Number of citizens",
     guide = guide_legend(
@@ -270,9 +281,21 @@ map.population
 And labels for the municipality units
 
 ```{r}
-map.population <- map.population +
+map.population +
   geom_label(
     aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=0.4),
+    label.size = 0.15, show.legend = F
+    ) +
+  labs(title = "Brno Population per MOC")
+```
+
+It is often practical to highlight the labels as well
+
+```{r}
+map.population <- map.population +
+  geom_label(
+    # logarithmig fill for smoother transition
+    aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=log(population)),
     label.size = 0.15, show.legend = F
     ) +
   labs(title = "Brno Population per MOC")
@@ -298,6 +321,115 @@ map.population +
       nrow = 1)
     )
 ```
+
+
+We might also be interested in area and/or population density
+
+```{r}
+ggplot(data = df.brno[order(df.brno$SHAPE_Area),], aes(x = NAZ_ZUJ, y = SHAPE_Area / 1e6)) +
+  geom_col(aes(fill = SHAPE_Area)) +
+  xlab("Municipality unit") +
+  ylab(expression(paste("Area [km"^2*"]"))) +
+  labs(title = "Brno Area size per MOC") +
+  scale_fill_gradient(
+    breaks = split_points,
+    low = muted('blue'), high = 'red',
+    guide = 'legend') +
+  theme(
+    axis.text.x = element_text(angle = 90),
+
+    plot.title = element_text(hjust = 0.5),
+
+    panel.background = element_blank()
+  )
+```
+
+
+```{r}
+area.breaks <- cut(sort(df.brno$SHAPE_Area), 5, ordered_result = T) %>%
+  table() %>%  # frequency as index
+  as.data.frame() %>%
+  set_colnames(c("interval", "idx")) %>%
+  mutate(idx = cumsum(idx))
+
+area.breaks$label <- sort(df.brno$SHAPE_Area[area.breaks$idx] / 1e6) %>%
+  round(digits = 2)
+
+map.area <- map.base +
+  geom_sf(aes(fill = SHAPE_Area)) +
+  geom_label(
+    # logarithmig fill for smoother transition
+    aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=SHAPE_Area),
+    label.size = 0.15, show.legend = F
+    ) +
+  coord_sf(datum = NA) +
+  labs(title = "Brno area per MOC") +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  scale_fill_gradient(
+    low = muted('blue'), high = 'red',
+    breaks = sort(df.brno$SHAPE_Area[area.breaks$idx]),
+    labels = area.breaks$label,
+    name = expression(paste("Area size [km"^2*"]")),
+    guide = guide_legend(
+      keyheight = unit(3, units = 'mm'),
+      keywidth = unit(12, units = 'mm'),
+      label.position = 'bottom',
+      title.position = 'top',
+      nrow = 1)
+    )
+```
+
+```{r, echo=FALSE}
+map.area
+```
+
+```{r}
+density.breaks <- cut(sort(df.brno$density), 5, ordered_result = T) %>%
+  table() %>%  # frequency as index
+  as.data.frame() %>%
+  set_colnames(c("interval", "idx")) %>%
+  mutate(idx = cumsum(idx))
+
+density.breaks$label <- sort(df.brno$density[density.breaks$idx]) %>%
+  round(-2)
+
+density.breaks
+
+map.density <- map.base +
+  geom_sf(aes(fill = density)) +
+  geom_label(
+    # logarithmig fill for smoother transition
+    aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=density),
+    label.size = 0.15, show.legend = F
+    ) +
+  coord_sf(datum = NA) +
+  labs(title = "Brno population density") +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  scale_fill_gradient(
+    low = muted('blue'), high = 'red',
+    breaks = sort(df.brno$density[density.breaks$idx]),
+    labels = density.breaks$label,
+    name = expression(paste("Density [person / km"^2*"]")),
+    guide = guide_legend(
+      keyheight = unit(3, units = 'mm'),
+      keywidth = unit(12, units = 'mm'),
+      label.position = 'bottom',
+      title.position = 'top',
+      nrow = 1)
+    )
+```
+
+```{r, echo=FALSE}
+map.density
+```
+
+
 
 ## Kepler.gl
 

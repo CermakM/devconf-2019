@@ -1,7 +1,7 @@
 ---
 title: "Brno Municipality Units"
 subtitle: "[DATASET]"
-date: "2019-01-24"
+date: "2019-01-26"
 
 weight: 1
 
@@ -99,6 +99,10 @@ Get the shape files for Brno base map
 
     df.brno <- merge(df.brno.moc, df.brno.obyv, by.x = "NAZ_ZUJ", by.y = "districts")
 
+    # for future usage (population density)
+    df.brno %<>%
+      mutate(density = population * 1e6 / SHAPE_Area)  # person / km^2
+
 Peek at the data
 
 <table>
@@ -125,6 +129,7 @@ Peek at the data
 <th align="right">SHAPE_Area</th>
 <th align="right">id</th>
 <th align="right">population</th>
+<th align="right">density</th>
 </tr>
 </thead>
 <tbody>
@@ -149,6 +154,7 @@ Peek at the data
 <td align="right">3017709</td>
 <td align="right">8</td>
 <td align="right">13026</td>
+<td align="right">4316.5189</td>
 </tr>
 <tr class="even">
 <td align="left">Bosonohy</td>
@@ -171,6 +177,7 @@ Peek at the data
 <td align="right">7147886</td>
 <td align="right">24</td>
 <td align="right">2366</td>
+<td align="right">331.0070</td>
 </tr>
 <tr class="odd">
 <td align="left">Bystrc</td>
@@ -193,6 +200,7 @@ Peek at the data
 <td align="right">27242244</td>
 <td align="right">13</td>
 <td align="right">23539</td>
+<td align="right">864.0625</td>
 </tr>
 <tr class="even">
 <td align="left">Černovice</td>
@@ -215,6 +223,7 @@ Peek at the data
 <td align="right">6291806</td>
 <td align="right">6</td>
 <td align="right">6955</td>
+<td align="right">1105.4059</td>
 </tr>
 <tr class="odd">
 <td align="left">Chrlice</td>
@@ -237,6 +246,7 @@ Peek at the data
 <td align="right">9492907</td>
 <td align="right">23</td>
 <td align="right">3187</td>
+<td align="right">335.7243</td>
 </tr>
 <tr class="even">
 <td align="left">Ivanovice</td>
@@ -259,6 +269,7 @@ Peek at the data
 <td align="right">2446103</td>
 <td align="right">26</td>
 <td align="right">1672</td>
+<td align="right">683.5363</td>
 </tr>
 </tbody>
 </table>
@@ -267,7 +278,11 @@ Peek at the data
 
 ### Brno population
 
-Start simple
+Start simple and proceed from general information to more specific.
+
+Total number of Brno citizens:
+
+    sum(df.brno$population)
 
     ggplot(data = df.brno) +
       geom_boxplot(aes(y = population)) +
@@ -283,7 +298,7 @@ Start simple
         panel.background = element_blank()
       )
 
-![](project/brno-municipality-units/figure/unnamed-chunk-4-1.png)
+![](project/brno-municipality-units/figure/unnamed-chunk-5-1.png)
 
 
     ggplot(data = df.brno, aes(x = NAZ_ZUJ, y = population)) +
@@ -299,7 +314,7 @@ Start simple
         panel.background = element_blank()
       )
 
-![](project/brno-municipality-units/figure/unnamed-chunk-5-1.png)
+![](project/brno-municipality-units/figure/unnamed-chunk-6-1.png)
 
 Plot population split in the intervals
 
@@ -319,7 +334,7 @@ Plot population split in the intervals
 
     population_graph  # for interactive version, use ggplotly(population_graph)
 
-![](project/brno-municipality-units/figure/unnamed-chunk-7-1.png)
+![](project/brno-municipality-units/figure/unnamed-chunk-8-1.png)
 
 And color it accordingly
 
@@ -327,10 +342,10 @@ And color it accordingly
       geom_col(aes(fill = population)) +
       scale_fill_gradient(
         breaks = split_points,
-        low = muted('blue'), high = muted('red'),
+        low = muted('blue'), high = 'red',
         guide = 'legend')
 
-![](project/brno-municipality-units/figure/unnamed-chunk-8-1.png)
+![](project/brno-municipality-units/figure/unnamed-chunk-9-1.png)
 
 Let's plot it on the map
 
@@ -346,7 +361,7 @@ Let's plot it on the map
       ) +
       labs(title = "Brno Base Map")
 
-![](project/brno-municipality-units/figure/unnamed-chunk-10-1.png)
+![](project/brno-municipality-units/figure/unnamed-chunk-11-1.png)
 
 Plot the population data
 
@@ -361,7 +376,7 @@ Plot the population data
         plot.title = element_text(hjust = 0.5)
       )
 
-![](project/brno-municipality-units/figure/unnamed-chunk-12-1.png)
+![](project/brno-municipality-units/figure/unnamed-chunk-13-1.png)
 
 ... And add some fancy stuff, like custom coloring and legend based on
 the splits above
@@ -369,7 +384,7 @@ the splits above
     # population map
     map.population <- map.population +
       scale_fill_gradient(
-        low = muted('blue'), high = muted('red'),
+        low = muted('blue'), high = 'red',
         breaks = round(sort(df.brno$population)[floor(split_points)], -3),
         name = "Number of citizens",
         guide = guide_legend(
@@ -380,11 +395,11 @@ the splits above
           nrow = 1)
         )
 
-![](project/brno-municipality-units/figure/unnamed-chunk-14-1.png)
+![](project/brno-municipality-units/figure/unnamed-chunk-15-1.png)
 
 And labels for the municipality units
 
-    map.population <- map.population +
+    map.population +
       geom_label(
         aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=0.4),
         label.size = 0.15, show.legend = F
@@ -392,6 +407,18 @@ And labels for the municipality units
       labs(title = "Brno Population per MOC")
 
 ![](project/brno-municipality-units/figure/unnamed-chunk-16-1.png)
+
+It is often practical to highlight the labels as well
+
+    map.population <- map.population +
+      geom_label(
+        # logarithmig fill for smoother transition
+        aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=log(population)),
+        label.size = 0.15, show.legend = F
+        ) +
+      labs(title = "Brno Population per MOC")
+
+![](project/brno-municipality-units/figure/unnamed-chunk-18-1.png)
 
 Perhaps not as pretty, but a little bit clearer scale:
 
@@ -408,7 +435,104 @@ Perhaps not as pretty, but a little bit clearer scale:
           nrow = 1)
         )
 
-![](project/brno-municipality-units/figure/unnamed-chunk-17-1.png)
+![](project/brno-municipality-units/figure/unnamed-chunk-19-1.png)
+
+We might also be interested in area and/or population density
+
+    ggplot(data = df.brno[order(df.brno$SHAPE_Area),], aes(x = NAZ_ZUJ, y = SHAPE_Area / 1e6)) +
+      geom_col(aes(fill = SHAPE_Area)) +
+      xlab("Municipality unit") +
+      ylab(expression(paste("Area [km"^2*"]"))) +
+      labs(title = "Brno Area size per MOC") +
+      scale_fill_gradient(
+        breaks = split_points,
+        low = muted('blue'), high = 'red',
+        guide = 'legend') +
+      theme(
+        axis.text.x = element_text(angle = 90),
+
+        plot.title = element_text(hjust = 0.5),
+
+        panel.background = element_blank()
+      )
+
+![](project/brno-municipality-units/figure/unnamed-chunk-20-1.png)
+
+    area.breaks <- cut(sort(df.brno$SHAPE_Area), 5, ordered_result = T) %>%
+      table() %>%  # frequency as index
+      as.data.frame() %>%
+      set_colnames(c("interval", "idx")) %>%
+      mutate(idx = cumsum(idx))
+
+    area.breaks$label <- sort(df.brno$SHAPE_Area[area.breaks$idx] / 1e6) %>%
+      round(digits = 2)
+
+    map.area <- map.base +
+      geom_sf(aes(fill = SHAPE_Area)) +
+      geom_label(
+        # logarithmig fill for smoother transition
+        aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=SHAPE_Area),
+        label.size = 0.15, show.legend = F
+        ) +
+      coord_sf(datum = NA) +
+      labs(title = "Brno area per MOC") +
+      theme_void() +
+      theme(
+        plot.title = element_text(hjust = 0.5)
+      ) +
+      scale_fill_gradient(
+        low = muted('blue'), high = 'red',
+        breaks = sort(df.brno$SHAPE_Area[area.breaks$idx]),
+        labels = area.breaks$label,
+        name = expression(paste("Area size [km"^2*"]")),
+        guide = guide_legend(
+          keyheight = unit(3, units = 'mm'),
+          keywidth = unit(12, units = 'mm'),
+          label.position = 'bottom',
+          title.position = 'top',
+          nrow = 1)
+        )
+
+![](project/brno-municipality-units/figure/unnamed-chunk-22-1.png)
+
+    density.breaks <- cut(sort(df.brno$density), 5, ordered_result = T) %>%
+      table() %>%  # frequency as index
+      as.data.frame() %>%
+      set_colnames(c("interval", "idx")) %>%
+      mutate(idx = cumsum(idx))
+
+    density.breaks$label <- sort(df.brno$density[density.breaks$idx]) %>%
+      round(-2)
+
+    density.breaks
+
+    map.density <- map.base +
+      geom_sf(aes(fill = density)) +
+      geom_label(
+        # logarithmig fill for smoother transition
+        aes(label = NAZ_ZUJ, x = SX, y = SY, size=2, alpha=density),
+        label.size = 0.15, show.legend = F
+        ) +
+      coord_sf(datum = NA) +
+      labs(title = "Brno population density") +
+      theme_void() +
+      theme(
+        plot.title = element_text(hjust = 0.5)
+      ) +
+      scale_fill_gradient(
+        low = muted('blue'), high = 'red',
+        breaks = sort(df.brno$density[density.breaks$idx]),
+        labels = density.breaks$label,
+        name = expression(paste("Density [person / km"^2*"]")),
+        guide = guide_legend(
+          keyheight = unit(3, units = 'mm'),
+          keywidth = unit(12, units = 'mm'),
+          label.position = 'bottom',
+          title.position = 'top',
+          nrow = 1)
+        )
+
+![](project/brno-municipality-units/figure/unnamed-chunk-24-1.png)
 
 Kepler.gl
 ---------
